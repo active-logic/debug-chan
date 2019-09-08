@@ -4,7 +4,7 @@ Prolog is an automated logger for C# and Unity:
 - Log every function call (with custom exclusions)
 - Display logs interactively
 
-Prolog injects assemblies via [Mono.Cecil](https://github.com/jbevain/cecil); sources are not modified.
+Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); sources are not modified.
 
 ## Requirements
 
@@ -23,7 +23,7 @@ To uninstall, delete the `Prolog` directory from your project.
 
 ## Configuration
 
-*Prolog* proceses assemblies located under *PROJECT/Library/ScriptAssemblies*. If you wish to exclude dlls, classes or methods, create a *.prolog* file in your *Assets* directory. Similar to *.gitignore*, list one exclusion per line:
+*Prolog* processes assemblies located under *PROJECT/Library/ScriptAssemblies*. If you wish to exclude dlls, classes or methods, create a *.prolog* file in your *Assets* directory. Similar to *.gitignore*, list one exclusion per line:
 
 ```
 Utils.dll  # Exclude the Utils module
@@ -55,6 +55,9 @@ Aside from minor formatting and stability improvements, the following are consid
 - Logging to files or external consoles
 - Logging stack-trees
 - Logging parameters and return values
+- Collate identical frame ranges (readability, concision)
+- Persist console window settings
+- Add a debugger/stepper
 
 Support development and keep software free!
 

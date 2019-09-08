@@ -45,10 +45,10 @@ public class ActiveLog : EditorWindow{
         current = Selection.activeGameObject;
         instance = this;
         //
-        filter       = TextField("Filter: ", filter);
+        // filter       = TextField("Filter: ", filter);
         useSelection = ToggleLeft("Use Selection", useSelection);
         if(EditorApplication.isPaused)
-            allFrames = ToggleLeft("All Frames", allFrames);
+            allFrames = ToggleLeft("History", allFrames);
         if(!useSelection) current = null;
         scroll = BeginScrollView(scroll);
         GUI.backgroundColor = Color.black;
