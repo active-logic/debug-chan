@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEditor;
+using System.Linq;
 using static UnityEditor.EditorGUILayout;
 
 namespace Active.Log{
 public class ActiveLog : EditorWindow{
 
+    const int FontSize = 13;
     public static ActiveLog instance;
+    static Font _font;
     //
     public bool          useSelection = true;
     public bool          allFrames    = false;
@@ -44,16 +47,19 @@ public class ActiveLog : EditorWindow{
         string log = currentFormatter.output;
         current = Selection.activeGameObject;
         instance = this;
-        //
-        // filter       = TextField("Filter: ", filter);
+        // filter    = TextField("Filter: ", filter);
         useSelection = ToggleLeft("Use Selection", useSelection);
         if(EditorApplication.isPaused)
             allFrames = ToggleLeft("History", allFrames);
         if(!useSelection) current = null;
         scroll = BeginScrollView(scroll);
         GUI.backgroundColor = Color.black;
-        GUI.skin.textArea.normal.textColor = Color.white * 0.9f;
-        GUI.skin.textArea.focused.textColor = Color.white;
+        var style = GUI.skin.textArea;
+        style.font = font;
+        style.fontSize = FontSize;
+        style.normal.textColor  = Color.white * 0.9f;
+        style.focused.textColor = Color.white;
+        style.focused.textColor = Color.white;
         GUILayout.TextArea(log, GUILayout.ExpandHeight(true));
         EndScrollView();
     }
@@ -69,9 +75,10 @@ public class ActiveLog : EditorWindow{
         instance.Show();
     }
 
-    protected void print(string str) => Debug.Log(str);
-
-    protected void Label(string str) => GUILayout.Label(str);
+    static Font font => _font = _font ?? Font.CreateDynamicFontFromOSFont(
+        new []{"Menlo", "Consolas", "Courier", "Courier New", "Lucida Console",
+               "Monaco", "Inconsolata"}
+        .Intersect(Font.GetOSInstalledFontNames()).First(), FontSize);
 
     Formatter currentFormatter => (useSelection && (current != null))
         ? useHistory ? (Formatter)goHistoryFmt : (Formatter)goStateFmt
