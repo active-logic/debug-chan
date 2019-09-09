@@ -7,16 +7,16 @@ using File = System.IO.FileInfo;
 namespace Active.Log{
 public static class LoggingAspect{
 
-    static bool verbose = false;
-    //
-    const string root = "Library/ScriptAssemblies/";
-    const string self = "Activ.Prolog.dll";
-    public static bool injectAccessors;
+    static bool   verbose = false;
+    const  string root    = "Library/ScriptAssemblies/";
+    const  string self    = "Activ.Prolog.dll";
 
     [UnityEditor.Callbacks.DidReloadScripts]
     public static void Process(){
         File[] files = new Dir(root).GetFiles("*.dll");
-        foreach (File f in files) ProcessFile(root + f.Name);
+        foreach (File f in files){
+            if(!Config.Exclude(f.Name)) ProcessFile(root + f.Name);
+        }
     }
 
     public static void ProcessFile(string path){
@@ -39,11 +39,14 @@ public static class LoggingAspect{
             }
             if (type.IsPublic){
                 foreach(MethodDefinition method in type.Methods){
-                    if(!method.IsConstructor && !IsAccessor(method)){
-                        // Interface and abstract methods do not have a body
-                        if(method.Body == null) continue;
-                        if(!IsInjected(method)) Inject(type, method);
-                    }
+                    // Note: interface and abstract methods do not have a body
+                    if( method.IsConstructor
+                        || IsAccessor(method)
+                        || method.Body==null
+                        || Config.Exclude($"{type.Name}.{method.Name}")
+                        || IsInjected(method)
+                    ) continue;
+                    Inject(type, method);
                 } ptc++;
             }
         } module.Write(path);
