@@ -3,12 +3,10 @@ using UnityEngine;
 namespace Active.Log{
 public class LogMessage{
 
-    public int frame;
+    public int        frame;
+    public string     _sourceType, ownerName, message;
     public GameObject owner;
-    public string ownerName;
-    public object source;
-    public string _sourceType;
-    public string message;
+    public object     source;
 
     public LogMessage(int frame, object source, string msg){
         this.frame = frame;
@@ -27,7 +25,9 @@ public class LogMessage{
     }
 
     public bool   isStatic   => source == null;
-    public string call       => $"{sourceType}.{message}";
+    public string call       => $"{sourceType}{message}";
     public string sourceType => source?.GetType().Name ?? _sourceType;
+
+    override public string ToString() => $"{frame} {ownerName} {call}";
 
 }}

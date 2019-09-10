@@ -7,13 +7,15 @@ public static class Logger{
 
     public static Log log => _log = _log ?? new Log();
 
-    public static void Log(object src, string message){
-        var msg = log.Append(new LogMessage(Time.frameCount, src, message));
-        ActiveLogWindow.OnMessage(msg);
-    }
+    public static void Log(object src, string message)
+    => Dispatch(new LogMessage(Time.frameCount, src, message));
 
-    public static void LogStatic(string type, string message){
-        var msg = log.Append(new LogMessage(Time.frameCount, type, message));
+    public static void LogStatic(string type, string message)
+    => Dispatch(new LogMessage(Time.frameCount, type, message));
+
+    static void Dispatch(LogMessage msg){
+        log.Append(msg);
+        LogToFile.Log(msg);
         ActiveLogWindow.OnMessage(msg);
     }
 
