@@ -9,12 +9,12 @@ public static class Logger{
 
     public static void Log(object src, string message){
         var msg = log.Append(new LogMessage(Time.frameCount, src, message));
-        ActiveLog.OnMessage(msg);
+        ActiveLogWindow.OnMessage(msg);
     }
 
     public static void LogStatic(string type, string message){
         var msg = log.Append(new LogMessage(Time.frameCount, type, message));
-        ActiveLog.OnMessage(msg);
+        ActiveLogWindow.OnMessage(msg);
     }
 
 }}

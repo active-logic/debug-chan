@@ -1,10 +1,15 @@
 using System.Text;
 using UnityEngine;
+using UnityEditor;
 
 namespace Active.Log{
 public class LogHistoryFormatter : Formatter{
 
     const int Padding = 12;
+
+    public void Update(){
+        Clear(); foreach(var x in Logger.log.messages) Append(x);
+    }
 
     public void Append(LogMessage x){
         msg = x;

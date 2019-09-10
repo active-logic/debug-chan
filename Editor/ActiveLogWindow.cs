@@ -4,10 +4,10 @@ using System.Linq;
 using static UnityEditor.EditorGUILayout;
 
 namespace Active.Log{
-public class ActiveLog : EditorWindow{
+public class ActiveLogWindow : EditorWindow{
 
     const int FontSize = 13;
-    public static ActiveLog instance;
+    public static ActiveLogWindow instance;
     static Font _font;
     //
     public bool          useSelection = true;
@@ -24,6 +24,14 @@ public class ActiveLog : EditorWindow{
     int frame = -1;
     Vector2 scroll;
 
+    ActiveLogWindow() => EditorApplication.pauseStateChanged +=
+    (PauseState s) => {
+        if(s != PauseState.Paused) return;
+        historyFmt.Update();
+        goHistoryFmt.Update(current);
+        Repaint();
+    };
+
     public static void OnMessage(LogMessage message){
         if(Application.isPlaying && instance){
             instance.current = Selection.activeGameObject;
@@ -32,10 +40,8 @@ public class ActiveLog : EditorWindow{
     }
 
     void DoUpdate(Log log, LogMessage msg){
-        historyFmt.Append(msg);
         stateFmt.Append(msg);
         goStateFmt.Append(msg, current);
-        goHistoryFmt.Append(log, msg, current);
         //
         if(frame != Time.frameCount){
             frame = Time.frameCount;
@@ -49,13 +55,15 @@ public class ActiveLog : EditorWindow{
         instance = this;
         // filter    = TextField("Filter: ", filter);
         useSelection = ToggleLeft("Use Selection", useSelection);
-        if(EditorApplication.isPaused)
-            allFrames = ToggleLeft("History", allFrames);
+        if(canUseHistory) allFrames = ToggleLeft("History", allFrames);
         if(!useSelection) current = null;
         scroll = BeginScrollView(scroll);
         GUI.backgroundColor = Color.black;
         var style = GUI.skin.textArea;
-        style.font = font;
+        var f = font;
+        if(f==null) Debug.LogError("font not available");
+
+        style.font = f;
         style.fontSize = FontSize;
         style.normal.textColor  = Color.white * 0.9f;
         style.focused.textColor = Color.white;
@@ -65,25 +73,33 @@ public class ActiveLog : EditorWindow{
     }
 
     void OnSelectionChange(){
-        goHistoryFmt.Rebuild(Logger.log, Selection.activeGameObject);
+        if(!EditorApplication.isPaused) return;
+        goHistoryFmt.Update(Selection.activeGameObject);
         Repaint();
     }
 
     [MenuItem("Window/Active Log")]
     static void Init(){
-        instance = (ActiveLog)EditorWindow.GetWindow(typeof(ActiveLog));
+        instance =
+            (ActiveLogWindow)EditorWindow.GetWindow(typeof(ActiveLogWindow));
         instance.Show();
     }
 
-    static Font font => _font = _font ?? Font.CreateDynamicFontFromOSFont(
-        new []{"Menlo", "Consolas", "Courier", "Courier New", "Lucida Console",
-               "Monaco", "Inconsolata"}
-        .Intersect(Font.GetOSInstalledFontNames()).First(), FontSize);
+    static Font font{ get{
+        if(_font) return _font;
+        var avail = new []{ "Menlo", "Consolas", "Courier", "Courier New",
+                            "Lucida Console", "Monaco", "Inconsolata" }
+                    .Intersect(Font.GetOSInstalledFontNames()).First();
+        return _font = Font.CreateDynamicFontFromOSFont(avail, FontSize);
+    }}
 
     Formatter currentFormatter => (useSelection && (current != null))
         ? useHistory ? (Formatter)goHistoryFmt : (Formatter)goStateFmt
         : useHistory ? (Formatter)historyFmt   : (Formatter)stateFmt;
 
-    bool useHistory => allFrames && EditorApplication.isPaused;
+    bool useHistory => allFrames && canUseHistory;
+
+    bool canUseHistory
+    => EditorApplication.isPaused || !EditorApplication.isPlaying;
 
 }}

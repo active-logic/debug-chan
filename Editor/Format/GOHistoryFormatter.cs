@@ -6,22 +6,21 @@ public class GOHistoryFormatter : Formatter{
 
     GameObject target;
 
-    public void Append(Log log, LogMessage x, GameObject target){
+    public void Update(GameObject target){
+        Clear($"■ {target?.name}");
+        foreach(var x in Logger.log.messages) Append(x, target);
+    }
+
+    public void Append(LogMessage x, GameObject target){
         msg = x;
         if(x.owner != target) return;
-        if(IsNewTarget(target)) { Rebuild(log, target); return; }
         if(isNewFrame) Append("\n\n");
-        if(isNewFrame) Append($"{x.frame} ------------------------------\n\n");
+        if(isNewFrame) Append( (x.frame + " ").PadRight(40, '―') + '\n' );
         if(isNewObject || isNewFrame)
                        Append($"[{x.sourceType}] ");
                        Append($" {x.message}" );
         Trim();
         prev = x;
-    }
-
-    public void Rebuild(Log log, GameObject target){
-        Clear($"■ {target?.name}");
-        foreach(var m in log.messages) Append(log, m, target);
     }
 
     bool IsNewTarget(GameObject target){
