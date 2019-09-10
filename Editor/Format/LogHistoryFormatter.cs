@@ -9,7 +9,10 @@ public class LogHistoryFormatter : Formatter{
     public void Append(LogMessage x){
         msg = x;
         if(isNewFrame) Append( (x.frame + " ").PadRight(40, '―') + '\n' );
-        Append($"{Pad(x.ownerName)} {Pad(x.sourceType)} {x.message}\n");
+        Append(  Pad(isNewGO     ? x.ownerName  : "")
+               + Pad(isNewObject ? x.sourceType : "")
+               + x.message
+               + "\n");
         Trim();
         prev = x;
     }
