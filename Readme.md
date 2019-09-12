@@ -4,10 +4,10 @@
 
 Prolog is an automated logger for C# and Unity 3D:
 - Log every function call (with custom exclusions)
-- Display logs interactively
+- Display logs interactively, with an option to view logs on a per game object basis
 - Log to file
 
-Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); sources are not modified.
+Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); sources and build targets (iOS/standalone/etc) are not modified.
 
 ## Requirements
 
@@ -77,4 +77,4 @@ Do not send beans; use ko_fi. Do leave a note stating the name of your organizat
 
 <a href='https://ko-fi.com/A0114I97' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi1.png?v=2' border='0' alt='Send a tip' /></a>
 
-You may find information about the Fair source license [here](https://fair.io)
+You may find information about the Fair source license [here](https://fair.io).
