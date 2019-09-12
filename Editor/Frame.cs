@@ -7,13 +7,10 @@ namespace Active.Log{
 public class Frame{
 
     // Stored separately since derived frames may be empty
-    public int index { get; private set; }
+    public readonly int index;
     List<LogMessage> messages = new List<LogMessage>();
 
-    public Frame(LogMessage msg){
-        messages.Add(msg);
-        index = msg.frame;
-    }
+    public Frame(LogMessage msg){ messages.Add(msg); index = msg.frame; }
 
     Frame(Frame source, GameObject sel){
         index = source.index;

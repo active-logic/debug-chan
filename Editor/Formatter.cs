@@ -24,8 +24,10 @@ namespace Active.Log{
 
     static string FrameRange(History history, int i){
         int begin = history[i].index, end = history.End(i);
-        if(end==-1) throw new System.Exception("negative index");
-        return begin == end ? begin.ToString() : $"{begin}-{end}";
+        if(begin == end) return begin.ToString();
+        // Upon exiting play mode, frame count is set to zero while components
+        // are disabled, as a result, the end index of a range may be -1
+        return end >= 0 ? $"{begin}→{end}" : $"{begin}→({end})";
     }
 
 }}
