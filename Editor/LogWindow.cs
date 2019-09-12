@@ -23,14 +23,14 @@ public class LogWindow : EditorWindow{
     LogWindow() => Ed.pauseStateChanged += (PauseState s) =>
     { if(s == PauseState.Paused) Repaint(); };
 
-    public static void OnMessage(LogMessage message){
+    public static void OnMessage(Message message){
         if(Application.isPlaying && instance){
             instance.current = Selection.activeGameObject;
             instance.DoUpdate(message);
         }
     }
 
-    void DoUpdate(LogMessage msg)
+    void DoUpdate(Message msg)
     { if(frame != Time.frameCount){ frame = Time.frameCount; Repaint(); }}
 
     void OnGUI(){

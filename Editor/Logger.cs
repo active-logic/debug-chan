@@ -8,12 +8,12 @@ public static class Logger{
     public static List<Frame> frames = new List<Frame>();
 
     public static void Log(object src, string message)
-    => Process(new LogMessage(Time.frameCount, src, message));
+    => Process(new Message(Time.frameCount, src, message));
 
     public static void LogStatic(string type, string message)
-    => Process(new LogMessage(Time.frameCount, type, message));
+    => Process(new Message(Time.frameCount, type, message));
 
-    static void Process(LogMessage msg){
+    static void Process(Message msg){
         if(frame + msg) return;
         history += frame;
         LogWindowModel.instance.Log(frame);

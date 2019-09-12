@@ -11,7 +11,7 @@ public class Config : AssetPostprocessor{
     const string DISABLE_FLAG = "--disable";
     const string FILE_FLAG    = "--file";
     //
-    public const int    LogLineLength = 26;
+    public const int    LogLineLength = 32;
     public const int    MaxLines = 1000;
     public const string LogPath  = "Assets/log.txt",
                         Name     = "prolog.config",

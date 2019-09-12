@@ -8,9 +8,9 @@ public class Frame{
 
     // Stored separately since derived frames may be empty
     public readonly int index;
-    List<LogMessage> messages = new List<LogMessage>();
+    List<Message> messages = new List<Message>();
 
-    public Frame(LogMessage msg){ messages.Add(msg); index = msg.frame; }
+    public Frame(Message msg){ messages.Add(msg); index = msg.frame; }
 
     Frame(Frame source, GameObject sel){
         index = source.index;
@@ -23,7 +23,7 @@ public class Frame{
     public static Frame operator * (Frame self, GameObject sel)
     => sel ? new Frame(self, sel) : self;
 
-    public static bool operator + (Frame self, LogMessage msg){
+    public static bool operator + (Frame self, Message msg){
         if(msg.frame != self?.index) return false;
         self.messages.Add(msg);
         return true;
@@ -42,9 +42,11 @@ public class Frame{
     public string Format(int frameNo = -1){
         var x = new StringBuilder();
         if(messages.Count==0) return "Idle\n";
-        if(frameNo>0)x.Append($"#{frameNo} ".PadRight(
+        if(frameNo>0)x.Append($"\n#{frameNo} ".PadRight(
                                             Config.LogLineLength, '-') + '\n');
-        foreach(var k in messages) x.Append(k.Format() + '\n');
+        Message prev = null; foreach(var m in messages){
+            x.Append(MessageFormatter.Format(m, prev) + '\n'); prev = m;
+        }
         return x.ToString();
     }
 

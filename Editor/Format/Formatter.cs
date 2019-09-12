@@ -15,7 +15,7 @@ namespace Active.Log{
             count += history[--i].count;
         var x = new StringBuilder();
         for(int z = i; z < N; z++){
-            x.Append($"#{FrameRange(history, z)} ".PadRight(
+            x.Append($"\n#{FrameRange(history, z)} ".PadRight(
                                             Config.LogLineLength, '-') + '\n');
             x.Append(history[z].Format(-1));
         }
