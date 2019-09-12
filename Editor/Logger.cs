@@ -1,17 +1,28 @@
-using UnityEngine;
 using System.Collections.Generic;
+using System.Diagnostics;
+using UnityEngine;
+using UnityEditor;
+using static UnityEngine.Application;
 
 namespace Active.Log{
+[InitializeOnLoad]
 public static class Logger{
 
+    public static int injectionTimeMs;
     public static History history    = new History(Config.LogPath);
     public static List<Frame> frames = new List<Frame>();
 
+    static Logger(){
+        var w = Stopwatch.StartNew();
+        LoggingAspect.Process();
+        injectionTimeMs = (int)w.Elapsed.TotalMilliseconds;
+    }
+
     public static void Log(object src, string message)
-    => Process(new Message(Time.frameCount, src, message));
+    { if(isPlaying) Process(new Message(Time.frameCount, src, message)); }
 
     public static void LogStatic(string type, string message)
-    => Process(new Message(Time.frameCount, type, message));
+    { if(isPlaying) Process(new Message(Time.frameCount, type, message)); }
 
     static void Process(Message msg){
         if(frame + msg) return;

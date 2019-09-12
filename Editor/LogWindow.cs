@@ -56,9 +56,11 @@ public class LogWindow : EditorWindow{
         style.focused.textColor = Color.white;
         GUILayout.TextArea(log, GUILayout.ExpandHeight(true));
         EndScrollView();
+        GUILayout.Label($"{Logger.injectionTimeMs}ms");
     }
 
-    void OnSelectionChange(){ if(Ed.isPaused) Repaint(); }
+    void OnSelectionChange()
+    { if(Ed.isPaused || !Application.isPlaying) Repaint(); }
 
     [MenuItem("Window/Active Log")]
     static void Init(){
