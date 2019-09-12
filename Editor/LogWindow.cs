@@ -15,7 +15,9 @@ public class LogWindow : EditorWindow{
     public string     filter;
     public GameObject current;
     //
-    static Font _font;
+    static readonly string[] rtypeOptions = {"any", "void", "status"};
+    static Font     _font;
+    int rtypeIndex;
     int frame = -1;
     Vector2 scroll;
     LogWindowModel model = LogWindowModel.instance;
@@ -34,15 +36,29 @@ public class LogWindow : EditorWindow{
     { if(frame != Time.frameCount){ frame = Time.frameCount; Repaint(); }}
 
     void OnGUI(){
-        Config.enable = ToggleLeft("Enable Logging", Config.enable);
-        if(!Config.enable) return;
+        if(!Config.enable){
+            Config.enable = ToggleLeft("Enable Logging", Config.enable);
+            return;
+        }
         //
         current = Selection.activeGameObject;
-        string log = model.Output(useHistory, applicableSelection);
+        string log = model.Output(useHistory, applicableSelection,
+                                              rtypeOptions[rtypeIndex]);
         instance = this;
         // filter    = TextField("Filter: ", filter);
-        useSelection  = ToggleLeft("Use Selection", useSelection);
-        if(canUseHistory) allFrames = ToggleLeft("History", allFrames);
+        BeginHorizontal();
+        useSelection                = ToggleLeft("Use Selection",
+                                                 useSelection,
+                                                 GUILayout.MaxWidth(90f));
+        if(canUseHistory) allFrames = ToggleLeft("History",
+                                                 allFrames,
+                                                 GUILayout.MaxWidth(60));
+        // TODO - make return type filtering available with the global history
+        if(applicableSelection){
+            GUILayout.Label("→", GUILayout.MaxWidth(25f));
+            rtypeIndex = Popup(rtypeIndex, rtypeOptions);
+        }
+        EndHorizontal();
         if(!useSelection) current = null;
         scroll = BeginScrollView(scroll);
         GUI.backgroundColor = Color.black;
@@ -56,7 +72,11 @@ public class LogWindow : EditorWindow{
         style.focused.textColor = Color.white;
         GUILayout.TextArea(log, GUILayout.ExpandHeight(true));
         EndScrollView();
+        GUI.backgroundColor = Color.white;
+        BeginHorizontal();
+        Config.enable = ToggleLeft("Enable Logging", Config.enable);
         GUILayout.Label($"{Logger.injectionTimeMs}ms");
+        EndHorizontal();
     }
 
     void OnSelectionChange()

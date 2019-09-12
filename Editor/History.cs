@@ -7,7 +7,7 @@ public class History{
 
     public List<Frame> frames { get; private set; }
     string path;
-    GameObject selection;
+    Filter filter = new Filter(null, "any");
 
     public History(string path = null){
         this.path   = path;
@@ -15,8 +15,8 @@ public class History{
         if(path != null) File.Delete(path);
     }
 
-    public History(GameObject sel){
-        this.selection = sel;
+    public History(Filter filter){
+        this.filter = filter;
         this.frames = new List<Frame>();
         foreach(var frame in Logger.frames){ var self = this + frame; }
     }
@@ -35,7 +35,7 @@ public class History{
 
     public static History operator + (History self, Frame frame){
         if(self == null) return self;
-        frame *= self.selection;
+        frame *= self.filter;
         if(frame % self.last) return self;
         if(Config.logToFile && self.path != null){
             using(var writer = File.AppendText(self.path))
@@ -47,10 +47,8 @@ public class History{
     public static int operator ! (History self)
     => self == null ? 0 : self.frames.Count;
 
-    public static History operator / (History self, GameObject sel){
-        if(self != null && self.selection == sel) return self;
-        return new History(sel);
-    }
+    public static History operator / (History self, Filter filter)
+    => (self != null && self.filter == filter) ? self : new History(filter);
 
     static void print(string str) => UnityEngine.Debug.Log(str);
 

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEditor;
 using static UnityEngine.Application;
+using Active.Log.IL;
 
 namespace Active.Log{
 [InitializeOnLoad]
@@ -14,7 +15,7 @@ public static class Logger{
 
     static Logger(){
         var w = Stopwatch.StartNew();
-        LoggingAspect.Process();
+        Aspect.Process();
         injectionTimeMs = (int)w.Elapsed.TotalMilliseconds;
     }
 

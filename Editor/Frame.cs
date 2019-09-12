@@ -12,16 +12,16 @@ public class Frame{
 
     public Frame(Message msg){ messages.Add(msg); index = msg.frame; }
 
-    Frame(Frame source, GameObject sel){
+    Frame(Frame source, Filter filter){
         index = source.index;
-        foreach(var k in source.messages) if(k.owner == sel) messages.Add(k);
+        foreach(var k in source.messages) if(filter.Accept(k)) messages.Add(k);
     }
 
     public bool empty => messages.Count == 0;
     public int  count => messages.Count;
 
-    public static Frame operator * (Frame self, GameObject sel)
-    => sel ? new Frame(self, sel) : self;
+    public static Frame operator * (Frame self, Filter filter)
+    => filter.isNeutral ? self : new Frame(self, filter);
 
     public static bool operator + (Frame self, Message msg){
         if(msg.frame != self?.index) return false;
@@ -41,7 +41,7 @@ public class Frame{
 
     public string Format(int frameNo = -1){
         var x = new StringBuilder();
-        if(messages.Count==0) return "Idle\n";
+        if(messages.Count==0) return "\n(no output)\n";
         if(frameNo>0)x.Append($"\n#{frameNo} ".PadRight(
                                             Config.LogLineLength, '-') + '\n');
         Message prev = null; foreach(var m in messages){
