@@ -1,22 +1,29 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Active.Log{
 public static class Logger{
 
-    public static Log _log;
-
-    public static Log log => _log = _log ?? new Log();
+    public static History history    = new History(Config.LogPath);
+    public static List<Frame> frames = new List<Frame>();
 
     public static void Log(object src, string message)
-    => Dispatch(new LogMessage(Time.frameCount, src, message));
+    => Process(new LogMessage(Time.frameCount, src, message));
 
     public static void LogStatic(string type, string message)
-    => Dispatch(new LogMessage(Time.frameCount, type, message));
+    => Process(new LogMessage(Time.frameCount, type, message));
 
-    static void Dispatch(LogMessage msg){
-        log.Append(msg);
-        LogToFile.Log(msg);
-        ActiveLogWindow.OnMessage(msg);
+    static void Process(LogMessage msg){
+        if(frame + msg) return;
+        history += frame;
+        LogWindowModel.instance.Log(frame);
+        LogWindow.instance?.Repaint();
+        frame = new Frame(msg);
+    }
+
+    static Frame frame{
+        get => frames.Count == 0 ? null : frames[frames.Count-1];
+        set => frames.Add(value);
     }
 
 }}

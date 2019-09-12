@@ -26,9 +26,10 @@ To uninstall, delete the `Prolog` directory from your project.
 
 *Prolog* processes assemblies located under *PROJECT/Library/ScriptAssemblies*. If you wish to exclude dlls, classes or methods, create a *prolog.config* file in your *Assets* directory. Similar to *.gitignore*, list one exclusion per line.
 
-The `--file` switch may be included. This causes a log file to be generated under *Assets/log.txt*.
+In addition of exclusion paths, the following switches are supported:
 
-**NOTE** - log files may grow large; exclude *Assets/log.txt* from version control.
+- `--disable`: disable logging (also available in GUI)
+- `--file`: log to *Assets/log.txt*.
 
 ```
 --file     # Log output to Assets/log.txt
@@ -38,6 +39,8 @@ Bar.Print  # Don't log Bar.Print(...) overloads (ignores namespaces)
 ```
 
 *prolog.config* does not explicitly support comments or pattern matching, however you may comment out an exclusion or switch using '#'
+
+**NOTE** - log files may grow large; exclude *Assets/log.txt* from version control.
 
 ## Console window
 

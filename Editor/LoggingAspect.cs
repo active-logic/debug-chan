@@ -13,6 +13,10 @@ public static class LoggingAspect{
 
     [UnityEditor.Callbacks.DidReloadScripts]
     public static void Process(){
+        if(!Config.enable){
+            print("Logging disabled; do not inject");
+            return;
+        }
         File[] files = new Dir(root).GetFiles("*.dll");
         foreach (File f in files){
             if(!Config.Exclude(f.Name)) ProcessFile(root + f.Name);

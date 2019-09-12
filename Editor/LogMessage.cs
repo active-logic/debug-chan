@@ -28,6 +28,15 @@ public class LogMessage{
     public string call       => $"{sourceType}{message}";
     public string sourceType => source?.GetType().Name ?? _sourceType;
 
+    public static bool operator % (LogMessage x, LogMessage y)
+    =>  x.message     == y.message &&
+        x.source      == y.source &&
+        x.owner       == y.owner &&
+        x.ownerName   == y.ownerName &&
+        x._sourceType == y._sourceType;
+
+    public string Format() => $"{ownerName} {call}";
+
     override public string ToString() => $"{frame} {ownerName} {call}";
 
 }}

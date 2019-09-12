@@ -1,31 +1,24 @@
-using UnityEngine;
-using UnityEditor;
+using static UnityEditor.PlayerSettings;
+using static UnityEditor.EditorUserBuildSettings;
 
-// Ref: https://answers.unity.com/questions/416711/force-unity-to-recompile-scripts.html
+// Ref:
+// answers.unity.com/questions/416711/force-unity-to-recompile-scripts.html
 namespace Active.Log{
-public class Recompile{
+public static class Recompile{
 
+    const string s0 = "RebuildToggle1", s1 = "RebuildToggle2";
+
+    // TODO - works but looks overdone. If we're setting defines to
+    // a temp value, then reverting right away, why do we need to alternate?
     public static void Apply(){
-        string[] rebuildSymbols = { "RebuildToggle1", "RebuildToggle2" };
-        string definesString =
-            PlayerSettings.GetScriptingDefineSymbolsForGroup(
-                             EditorUserBuildSettings.selectedBuildTargetGroup);
-        var definesStringTemp = definesString;
-        if (definesStringTemp.Contains(rebuildSymbols[0])){
-            definesStringTemp = definesStringTemp.Replace(
-                                         rebuildSymbols[0], rebuildSymbols[1]);
-        }else if (definesStringTemp.Contains(rebuildSymbols[1])){
-            definesStringTemp = definesStringTemp.Replace(
-                                         rebuildSymbols[1], rebuildSymbols[0]);
-        }else{
-            definesStringTemp += ";" + rebuildSymbols[0];
-        }
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(
-            EditorUserBuildSettings.selectedBuildTargetGroup,
-            definesStringTemp);
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(
-            EditorUserBuildSettings.selectedBuildTargetGroup,
-            definesString);
+        var g    = selectedBuildTargetGroup;
+        var defs = GetScriptingDefineSymbolsForGroup(g);
+        var tmp  = defs;
+        if      (tmp.Contains(s0)) tmp  = tmp.Replace(s0, s1);
+        else if (tmp.Contains(s1)) tmp  = tmp.Replace(s1, s0);
+        else                       tmp += ";" + s0;
+        SetScriptingDefineSymbolsForGroup(g, tmp);
+        SetScriptingDefineSymbolsForGroup(g, defs);
     }
 
 }}
