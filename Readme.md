@@ -54,7 +54,7 @@ Open the console via *Window > Activ > Prolog*; options:
 
 ## Limitations
 
-- Console output is limited to 200,000 characters; necessary because Unity's text widget is slow (customize via *Format.cs*)
+- Console output is limited to 1000 lines; necessary because Unity's text widget is slow (customize via *Config.cs*)
 - Constructors and accessors are not logged.
 - On occasion, injecting log statements within a class, assembly or method causes `InvalidProgramException: Invalid IL code in NAMESPACE.CLASS:Method`; as a workaround, add the offending class or method to *prolog.config* and reimport.
 
@@ -62,10 +62,9 @@ Open the console via *Window > Activ > Prolog*; options:
 
 Aside from minor formatting and stability improvements, the following are considered:
 
-- Collate identical frame ranges (readability, concision)
 - Exclude non public calls when processing a target module. Helps with logging stable APIs.
-- Interactively navigate beyond the latest 200k characters
-- Stack-tree format
+- Interactively navigate beyond the latest 1000 lines
+- Log stack-trees
 - Log parameters and return values
 - Persist console window settings
 - Debugger/stepper
