@@ -48,6 +48,7 @@ Bar.Print  # Don't log Bar.Print(...) overloads (ignores namespaces)
 
 Open the console via *Window > Activ > Prolog*; options:
 
+- *Enable logging* - uncheck to disable logging (scripts will be recompiled)
 - *Use selection* - only view logs for the active game object.
 - *History* - when checked, show the history; otherwise, only report the current frame (available while pausing).
 
