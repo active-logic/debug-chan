@@ -1,5 +1,3 @@
-**ALPHA VERSION - A RELEASE WILL BE PROVIDED SOON.**
-
 # Prolog
 
 Prolog is an automated logger for C# and Unity 3D:
@@ -17,7 +15,7 @@ Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); 
 
 ## Install
 
-- Download the latest release and drag the package into your project.
+- Download the latest [release](https://github.com/active-logic/prolog/releases) and drag the package into your project.
 - Delete all `*.csproj` files at the root of your project (relative to the `Assets` folder, this is the parent directory); recommended because earlier versions of Unity (or IDEs) may build assemblies in unexpected locations.
 
 To uninstall, delete the `Prolog` directory from your project.
