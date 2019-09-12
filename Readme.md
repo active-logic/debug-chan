@@ -31,6 +31,8 @@ In addition of exclusion paths, the following switches are supported:
 - `--disable`: disable logging (also available in GUI)
 - `--file`: log to *Assets/log.txt*.
 
+Here is a sample configuration file:
+
 ```
 --file     # Log output to Assets/log.txt
 Utils.dll  # Exclude the Utils module
