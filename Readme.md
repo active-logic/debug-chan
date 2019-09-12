@@ -69,6 +69,12 @@ Aside from minor formatting and stability improvements, the following are consid
 - Persist console window settings
 - Debugger/stepper
 
-Support development and keep software free!
+## License
+
+Prolog is licensed under [Fair Source One](LICENSE). TLDR the first user in your org goes free, or buy me coffee (one coffee per additional user).
+
+Do not send beans; use ko_fi. Do leave a note stating the name of your organization.
 
 <a href='https://ko-fi.com/A0114I97' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi1.png?v=2' border='0' alt='Send a tip' /></a>
+
+You may find information about the Fair source license [here](https://fair.io)
