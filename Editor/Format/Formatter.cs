@@ -6,7 +6,7 @@ namespace Active.Log{
 
     public static string State(History history)
     => history.empty ? "History is empty"
-                     : history.last.Format(Time.frameCount);
+                     : history.last.Format();
 
     public static string Latest(History history){
         int count = 0, N = !history;

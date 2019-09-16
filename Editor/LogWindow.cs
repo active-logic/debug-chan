@@ -2,32 +2,29 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using static UnityEditor.EditorGUILayout;
+using static Active.Log.LogWindowModel;
 using Ed = UnityEditor.EditorApplication;
 
 namespace Active.Log{
 public class LogWindow : EditorWindow{
 
     const int FontSize = 13;
-    //
     public static LogWindow instance;
     //
-    public bool       useSelection = true, allFrames = false;
-    public string     filter;
-    public GameObject current;
-    //
-    static readonly string[] rtypeOptions = {"any", "void", "status"};
+    string currentLog;
     static Font     _font;
-    int rtypeIndex;
     int frame = -1;
     Vector2 scroll;
     LogWindowModel model = LogWindowModel.instance;
 
-    LogWindow() => Ed.pauseStateChanged += (PauseState s) =>
-    { if(s == PauseState.Paused) Repaint(); };
+    LogWindow(){
+        Ed.pauseStateChanged +=
+                   (PauseState s) => { if(s == PauseState.Paused) Repaint(); };
+    }
 
     public static void OnMessage(Message message){
         if(Application.isPlaying && instance){
-            instance.current = Selection.activeGameObject;
+            instance.model.current = Selection.activeGameObject;
             instance.DoUpdate(message);
         }
     }
@@ -36,30 +33,27 @@ public class LogWindow : EditorWindow{
     { if(frame != Time.frameCount){ frame = Time.frameCount; Repaint(); }}
 
     void OnGUI(){
-        if(!Config.enable){
-            Config.enable = ToggleLeft("Enable Logging", Config.enable);
-            return;
-        }
+        if(!Config.enable)
+        { Config.enable = ToggleLeft("Enable Logging", Config.enable); return; }
         //
-        current = Selection.activeGameObject;
-        string log = model.Output(useHistory, applicableSelection,
-                                              rtypeOptions[rtypeIndex]);
+        model.current = Selection.activeGameObject;
         instance = this;
-        // filter    = TextField("Filter: ", filter);
         BeginHorizontal();
-        useSelection                = ToggleLeft("Use Selection",
-                                                 useSelection,
-                                                 GUILayout.MaxWidth(90f));
-        if(canUseHistory) allFrames = ToggleLeft("History",
-                                                 allFrames,
-                                                 GUILayout.MaxWidth(60));
+        model.useSelection = ToggleLeft("Use Selection", model.useSelection,
+                                        GUILayout.MaxWidth(90f));
+        model.allFrames    = ToggleLeft("History",  model.allFrames,
+                                        GUILayout.MaxWidth(60));
         // TODO - make return type filtering available with the global history
-        if(applicableSelection){
+        if(model.applicableSelection){
             GUILayout.Label("→", GUILayout.MaxWidth(25f));
-            rtypeIndex = Popup(rtypeIndex, rtypeOptions);
+            model.rtypeIndex = Popup(model.rtypeIndex, rtypeOptions);
         }
         EndHorizontal();
-        if(!useSelection) current = null;
+        if(!model.useSelection) model.current = null;
+        BeginHorizontal();
+        GUILayout.Label($"#{Time.frameCount}");
+        model.step = ToggleLeft("Step", model.step, GUILayout.MaxWidth(90f));
+        EndHorizontal();
         scroll = BeginScrollView(scroll);
         GUI.backgroundColor = Color.black;
         var style = GUI.skin.textArea;
@@ -70,12 +64,15 @@ public class LogWindow : EditorWindow{
         style.normal.textColor  = Color.white * 0.9f;
         style.focused.textColor = Color.white;
         style.focused.textColor = Color.white;
+        string log = model.Output(useHistory, rtypeOptions[model.rtypeIndex]);
+        if(currentLog != log && model.step) Ed.isPaused = true;
+        currentLog = log;
         GUILayout.TextArea(log, GUILayout.ExpandHeight(true));
         EndScrollView();
         GUI.backgroundColor = Color.white;
         BeginHorizontal();
         Config.enable = ToggleLeft("Enable Logging", Config.enable);
-        GUILayout.Label($"{Logger.injectionTimeMs}ms");
+        GUILayout.Label($"{Logger.injectionTimeMs}ms", GUILayout.MaxWidth(90f));
         EndHorizontal();
     }
 
@@ -84,8 +81,7 @@ public class LogWindow : EditorWindow{
 
     [MenuItem("Window/Active Log")]
     static void Init(){
-        instance = (LogWindow)EditorWindow
-                   .GetWindow(typeof(LogWindow));
+        instance = (LogWindow)EditorWindow.GetWindow<LogWindow>(title: "Prolog");
         instance.Show();
     }
 
@@ -97,9 +93,7 @@ public class LogWindow : EditorWindow{
         return _font = Font.CreateDynamicFontFromOSFont(avail, FontSize);
     }}
 
-    GameObject applicableSelection => useSelection ? current : null;
-
-    bool useHistory => allFrames && canUseHistory;
+    bool useHistory => model.allFrames && canUseHistory;
 
     bool canUseHistory => Ed.isPaused || !Ed.isPlaying;
 
