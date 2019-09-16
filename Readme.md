@@ -64,8 +64,7 @@ Aside from minor formatting and stability improvements, the following are consid
 - Interactively navigate beyond the latest 1000 lines
 - Log stack-trees
 - Log parameters and return values
-- Persist console window settings
-- Debugger/stepper
+- Breakpoints
 
 ## License
 
