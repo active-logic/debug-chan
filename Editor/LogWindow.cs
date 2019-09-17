@@ -5,6 +5,7 @@ using static UnityEditor.EditorGUILayout;
 using static Activ.Prolog.LogWindowModel;
 using static Activ.Prolog.Config;
 using Ed = UnityEditor.EditorApplication;
+using GL = UnityEngine.GUILayout;
 
 namespace Activ.Prolog{
 public class LogWindow : EditorWindow{
@@ -47,20 +48,23 @@ public class LogWindow : EditorWindow{
         instance = this;
         BeginHorizontal();
         Config.useSelection = ToggleLeft("Use Selection", Config.useSelection,
-                                        GUILayout.MaxWidth(90f));
+                                         GL.MaxWidth(90f));
         Config.allFrames    = ToggleLeft("History",  Config.allFrames,
-                                        GUILayout.MaxWidth(60));
+                                         GL.MaxWidth(60));
         // TODO - make return type filtering available with the global history
         if(model.applicableSelection){
-            GUILayout.Label("→", GUILayout.MaxWidth(25f));
+            GL.Label("→", GL.MaxWidth(25f));
             Config.rtypeIndex = Popup(Config.rtypeIndex, rtypeOptions);
         }
         EndHorizontal();
         if(!Config.useSelection) model.current = null;
         BeginHorizontal();
         int frameNo = browsing ? selectedFrame.index : Time.frameCount;
-        GUILayout.Label($"#{frameNo}");
-        Config.step = ToggleLeft("Step", Config.step, GUILayout.MaxWidth(90f));
+        if(GL.Button("˂", GL.ExpandWidth(false))) SelectPrev();
+        GL.Button($"#{frameNo}", GL.MaxWidth(48f));
+        if(GL.Button("˃", GL.ExpandWidth(false))) SelectNext();
+        GL.FlexibleSpace();
+        Config.step = ToggleLeft("Step", Config.step, GL.MaxWidth(48f));
         EndHorizontal();
         scroll = BeginScrollView(scroll);
         GUI.backgroundColor = Color.black;
@@ -75,27 +79,31 @@ public class LogWindow : EditorWindow{
         string log = model.Output(useHistory, rtypeOptions[Config.rtypeIndex]);
         if(currentLog != log && Config.step) Ed.isPaused = true;
         currentLog = log;
-        GUILayout.TextArea(browsing ? selectedFrame.Format() : log,
-                           GUILayout.ExpandHeight(true));
+        GL.TextArea(browsing ? selectedFrame.Format() : log,
+                           GL.ExpandHeight(true));
         EndScrollView();
         GUI.backgroundColor = Color.white;
         BeginHorizontal();
-        Config.enable = ToggleLeft("Enable Logging", Config.enable);
-        GUILayout.Label($"{Logger.injectionTimeMs}ms", GUILayout.MaxWidth(90f));
+        Config.enable = ToggleLeft(
+            $"Enable Logging ({Logger.injectionTimeMs}ms)",
+            Config.enable, GL.ExpandWidth(true));
+        if(!Application.isPlaying){
+            if(GL.Button($"Clear", GL.MaxWidth(90f))) Clear();
+        }
         EndHorizontal();
         BeginHorizontal();
-        GUILayout.Label("Trail offset: ", GUILayout.MaxWidth(60f));
+        GL.Label("Trail offset: ", GL.MaxWidth(60f));
         Config.trailOffset = FloatField(Config.trailOffset,
-                                        GUILayout.MaxWidth(30f));
-        GUILayout.Label("Size: ", GUILayout.MaxWidth(30f));
-        Config.handleSize = FloatField(Config.handleSize, GUILayout.MaxWidth(30f));
+                                        GL.MaxWidth(30f));
+        GL.Label("Size: ", GL.MaxWidth(30f));
+        Config.handleSize = FloatField(Config.handleSize, GL.MaxWidth(30f));
         EndHorizontal();
     }
 
     // Ref https://tinyurl.com/yyo8c35g which also demonstrates starting a 2D
     // GUI at handles location
     void OnSceneGUI(SceneView sceneView){
-        var sel = HistoryGUI.Draw(model.filtered);
+        var sel = HistoryGUI.Draw(model.filtered, selectedFrame);
         if(Ed.isPaused || !Application.isPlaying){
             selectedFrame = sel ?? selectedFrame;
             Repaint();
@@ -106,6 +114,26 @@ public class LogWindow : EditorWindow{
 
     void OnSelectionChange()
     { if(Ed.isPaused || !Application.isPlaying) Repaint(); }
+
+    void Clear(){
+        Logger.Clear();
+        model.Clear();
+        selectedFrame = null;
+        SceneView.RepaintAll();
+        Repaint();
+    }
+
+    void SelectPrev(){
+        if(selectedFrame == null) return;
+        selectedFrame = model.filtered.Prev(selectedFrame);
+        SceneView.RepaintAll();
+    }
+
+    void SelectNext(){
+        if(selectedFrame == null) return;
+        selectedFrame = model.filtered.Next(selectedFrame);
+        SceneView.RepaintAll();
+    }
 
     [MenuItem("Window/Prolog")]
     static void Init(){

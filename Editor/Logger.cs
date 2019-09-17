@@ -19,6 +19,11 @@ public static class Logger{
         injectionTimeMs = (int)w.Elapsed.TotalMilliseconds;
     }
 
+    public static void Clear(){
+        frames = new List<Frame>();
+        history.Clear();
+    }
+
     public static void Log(object src, string message)
     { if(isPlaying) Process(new Message(Time.frameCount, src, message)); }
 

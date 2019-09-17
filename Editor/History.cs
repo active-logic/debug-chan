@@ -30,6 +30,14 @@ public class History{
 
     public Frame this[int i] => frames[i];
 
+    public void Clear() => frames = new List<Frame>();
+
+    public Frame Next(Frame x)
+    => frames[ System.Math.Min(frames.IndexOf(x) + 1, frames.Count-1) ];
+
+    public Frame Prev(Frame x)
+    => frames[ System.Math.Max(frames.IndexOf(x) - 1, 0) ];
+
     public int End(int i)  // End of range at i
     => i == !this - 1 ? Time.frameCount : frames[i + 1].index - 1;
 

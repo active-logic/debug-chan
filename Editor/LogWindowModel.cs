@@ -12,6 +12,11 @@ public class LogWindowModel{
     public GameObject applicableSelection
     => Config.useSelection ? current : null;
 
+    public void Clear(){
+        filtered = null;
+        current = null;
+    }
+
     public void Log(Frame frame) => filtered += frame;
 
     public string Output(bool useHistory, string rtype){
