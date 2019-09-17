@@ -124,8 +124,8 @@ public class LogWindow : EditorWindow{
     }
 
     void SelectPrev(){
-        if(selectedFrame == null) return;
-        selectedFrame = model.filtered.Prev(selectedFrame);
+        selectedFrame = model.filtered.Prev(selectedFrame
+                                            ?? model.filtered.last);
         SceneView.RepaintAll();
     }
 
