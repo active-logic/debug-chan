@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Linq;
 using static UnityEditor.EditorGUILayout;
 using static Active.Log.LogWindowModel;
+using static Active.Log.Config;
 using Ed = UnityEditor.EditorApplication;
 
 namespace Active.Log{
@@ -39,20 +40,20 @@ public class LogWindow : EditorWindow{
         model.current = Selection.activeGameObject;
         instance = this;
         BeginHorizontal();
-        model.useSelection = ToggleLeft("Use Selection", model.useSelection,
+        Config.useSelection = ToggleLeft("Use Selection", Config.useSelection,
                                         GUILayout.MaxWidth(90f));
-        model.allFrames    = ToggleLeft("History",  model.allFrames,
+        Config.allFrames    = ToggleLeft("History",  Config.allFrames,
                                         GUILayout.MaxWidth(60));
         // TODO - make return type filtering available with the global history
         if(model.applicableSelection){
             GUILayout.Label("→", GUILayout.MaxWidth(25f));
-            model.rtypeIndex = Popup(model.rtypeIndex, rtypeOptions);
+            Config.rtypeIndex = Popup(Config.rtypeIndex, rtypeOptions);
         }
         EndHorizontal();
-        if(!model.useSelection) model.current = null;
+        if(!Config.useSelection) model.current = null;
         BeginHorizontal();
         GUILayout.Label($"#{Time.frameCount}");
-        model.step = ToggleLeft("Step", model.step, GUILayout.MaxWidth(90f));
+        Config.step = ToggleLeft("Step", Config.step, GUILayout.MaxWidth(90f));
         EndHorizontal();
         scroll = BeginScrollView(scroll);
         GUI.backgroundColor = Color.black;
@@ -64,8 +65,8 @@ public class LogWindow : EditorWindow{
         style.normal.textColor  = Color.white * 0.9f;
         style.focused.textColor = Color.white;
         style.focused.textColor = Color.white;
-        string log = model.Output(useHistory, rtypeOptions[model.rtypeIndex]);
-        if(currentLog != log && model.step) Ed.isPaused = true;
+        string log = model.Output(useHistory, rtypeOptions[Config.rtypeIndex]);
+        if(currentLog != log && Config.step) Ed.isPaused = true;
         currentLog = log;
         GUILayout.TextArea(log, GUILayout.ExpandHeight(true));
         EndScrollView();
@@ -93,7 +94,7 @@ public class LogWindow : EditorWindow{
         return _font = Font.CreateDynamicFontFromOSFont(avail, FontSize);
     }}
 
-    bool useHistory => model.allFrames && canUseHistory;
+    bool useHistory => Config.allFrames && canUseHistory;
 
     bool canUseHistory => Ed.isPaused || !Ed.isPlaying;
 

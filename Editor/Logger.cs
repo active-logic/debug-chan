@@ -10,7 +10,7 @@ namespace Active.Log{
 public static class Logger{
 
     public static int injectionTimeMs;
-    public static History history    = new History(Config.LogPath);
+    public static History history    = new History(ConfigKeys.LogPath);
     public static List<Frame> frames = new List<Frame>();
 
     static Logger(){
