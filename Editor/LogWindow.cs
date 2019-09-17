@@ -2,21 +2,22 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using static UnityEditor.EditorGUILayout;
-using static Active.Log.LogWindowModel;
-using static Active.Log.Config;
+using static Activ.Prolog.LogWindowModel;
+using static Activ.Prolog.Config;
 using Ed = UnityEditor.EditorApplication;
 
-namespace Active.Log{
+namespace Activ.Prolog{
 public class LogWindow : EditorWindow{
 
     const int FontSize = 13;
     public static LogWindow instance;
     //
-    string currentLog;
     static Font     _font;
-    int frame = -1;
-    Vector2 scroll;
     LogWindowModel model = LogWindowModel.instance;
+    Frame          selectedFrame;   // Last selected frame object
+    Vector2        scroll;
+    string         currentLog;
+    int            frame = -1;      // Last frame while playing (store this?)
 
     LogWindow(){
         Ed.pauseStateChanged +=
@@ -32,6 +33,11 @@ public class LogWindow : EditorWindow{
 
     void DoUpdate(Message msg)
     { if(frame != Time.frameCount){ frame = Time.frameCount; Repaint(); }}
+
+    void OnFocus(){
+        SceneView.duringSceneGui -= OnSceneGUI;
+        SceneView.duringSceneGui += OnSceneGUI;
+    }
 
     void OnGUI(){
         if(!Config.enable)
@@ -52,7 +58,8 @@ public class LogWindow : EditorWindow{
         EndHorizontal();
         if(!Config.useSelection) model.current = null;
         BeginHorizontal();
-        GUILayout.Label($"#{Time.frameCount}");
+        int frameNo = browsing ? selectedFrame.index : Time.frameCount;
+        GUILayout.Label($"#{frameNo}");
         Config.step = ToggleLeft("Step", Config.step, GUILayout.MaxWidth(90f));
         EndHorizontal();
         scroll = BeginScrollView(scroll);
@@ -68,21 +75,42 @@ public class LogWindow : EditorWindow{
         string log = model.Output(useHistory, rtypeOptions[Config.rtypeIndex]);
         if(currentLog != log && Config.step) Ed.isPaused = true;
         currentLog = log;
-        GUILayout.TextArea(log, GUILayout.ExpandHeight(true));
+        GUILayout.TextArea(browsing ? selectedFrame.Format() : log,
+                           GUILayout.ExpandHeight(true));
         EndScrollView();
         GUI.backgroundColor = Color.white;
         BeginHorizontal();
         Config.enable = ToggleLeft("Enable Logging", Config.enable);
         GUILayout.Label($"{Logger.injectionTimeMs}ms", GUILayout.MaxWidth(90f));
         EndHorizontal();
+        BeginHorizontal();
+        GUILayout.Label("Trail offset: ", GUILayout.MaxWidth(60f));
+        Config.trailOffset = FloatField(Config.trailOffset,
+                                        GUILayout.MaxWidth(30f));
+        GUILayout.Label("Size: ", GUILayout.MaxWidth(30f));
+        Config.handleSize = FloatField(Config.handleSize, GUILayout.MaxWidth(30f));
+        EndHorizontal();
+    }
+
+    // Ref https://tinyurl.com/yyo8c35g which also demonstrates starting a 2D
+    // GUI at handles location
+    void OnSceneGUI(SceneView sceneView){
+        var sel = HistoryGUI.Draw(model.filtered);
+        if(Ed.isPaused || !Application.isPlaying){
+            selectedFrame = sel ?? selectedFrame;
+            Repaint();
+        }else{
+            selectedFrame = null;
+        }
     }
 
     void OnSelectionChange()
     { if(Ed.isPaused || !Application.isPlaying) Repaint(); }
 
-    [MenuItem("Window/Active Log")]
+    [MenuItem("Window/Prolog")]
     static void Init(){
-        instance = (LogWindow)EditorWindow.GetWindow<LogWindow>(title: "Prolog");
+        instance = (LogWindow)EditorWindow
+                   .GetWindow<LogWindow>(title: "Prolog");
         instance.Show();
     }
 
@@ -93,6 +121,9 @@ public class LogWindow : EditorWindow{
             .Intersect(Font.GetOSInstalledFontNames()).First();
         return _font = Font.CreateDynamicFontFromOSFont(avail, FontSize);
     }}
+
+    bool browsing
+    => (Ed.isPaused || !Application.isPlaying) && selectedFrame != null;
 
     bool useHistory => Config.allFrames && canUseHistory;
 

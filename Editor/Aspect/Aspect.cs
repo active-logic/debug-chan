@@ -5,9 +5,9 @@ using UnityEditor;
 using UnityEngine;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using static Active.Log.IL.Injector;
+using static Activ.Prolog.IL.Injector;
 
-namespace Active.Log.IL{
+namespace Activ.Prolog.IL{
 public static class Aspect{
 
     static bool   verbose = false;

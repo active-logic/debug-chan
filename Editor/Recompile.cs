@@ -3,7 +3,7 @@ using static UnityEditor.EditorUserBuildSettings;
 
 // Ref:
 // answers.unity.com/questions/416711/force-unity-to-recompile-scripts.html
-namespace Active.Log{
+namespace Activ.Prolog{
 public static class Recompile{
 
     const string s0 = "RebuildToggle1", s1 = "RebuildToggle2";

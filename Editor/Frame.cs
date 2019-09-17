@@ -3,18 +3,22 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Active.Log{
+namespace Activ.Prolog{
 public class Frame{
 
     // Stored separately since derived frames may be empty
     public readonly int index;
-    List<Message> messages = new List<Message>();
+    public readonly List<Message> messages = new List<Message>();
 
-    public Frame(Message msg){ messages.Add(msg); index = msg.frame; }
+    public Frame(Message msg){
+        messages.Add(msg);
+        index = msg.frame;
+    }
 
     Frame(Frame source, Filter filter){
         index = source.index;
-        foreach(var k in source.messages) if(filter.Accept(k)) messages.Add(k);
+        foreach(var k in source.messages)
+            if(filter.Accept(k)) messages.Add(k);
     }
 
     public bool empty => messages.Count == 0;

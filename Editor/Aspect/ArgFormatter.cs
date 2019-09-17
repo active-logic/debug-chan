@@ -1,6 +1,6 @@
 using Mono.Cecil;
 
-namespace Active.Log.IL{
+namespace Activ.Prolog.IL{
 public static class ArgFormatter{
 
     public static string Signature(MethodDefinition m)

@@ -3,9 +3,9 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEditor;
 using static UnityEngine.Application;
-using Active.Log.IL;
+using Activ.Prolog.IL;
 
-namespace Active.Log{
+namespace Activ.Prolog{
 [InitializeOnLoad]
 public static class Logger{
 

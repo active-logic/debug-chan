@@ -1,13 +1,13 @@
-namespace Active.Log{
+namespace Activ.Prolog{
 public static class MessageFormatter{
 
     public static string Format(Message x, Message prev){
-        var o = x.ownerName  != prev?.ownerName;
+        var o = x.owner.name != prev?.owner.name;
         var t = x.sourceType != prev?.sourceType;
-        if(x.ownerName == null)
+        if(x.owner == null)
             return $"{Z(x.sourceType, o || t)} {x.message}";
         else
-            return $"{Y(x.ownerName, o)} {Z(x.sourceType, o || t)} {x.message}";
+            return $"{Y(x.owner.name, o)} {Z(x.sourceType, o || t)} {x.message}";
     }
 
     static string Y(string x, bool inc)

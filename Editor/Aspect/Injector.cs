@@ -1,10 +1,10 @@
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Active.Log.IL{
+namespace Activ.Prolog.IL{
 public class Injector{
 
-    static System.Type LOGGER => typeof(Active.Log.Logger);
+    static System.Type LOGGER => typeof(Activ.Prolog.Logger);
     static System.Type OBJECT => typeof(object);
     static System.Type STRING => typeof(string);
 

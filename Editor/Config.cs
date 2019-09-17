@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq; using System.IO; using System.Text;
 using S = System.String;
 using UnityEditor; using static UnityEditor.EditorPrefs;
-using static Active.Log.ConfigKeys;
+using static Activ.Prolog.ConfigKeys;
 
-namespace Active.Log{
+namespace Activ.Prolog{
 public class Config : AssetPostprocessor{
 
     public const int LogLineLength = 32;
@@ -29,6 +29,12 @@ public class Config : AssetPostprocessor{
 
     public static bool useSelection
     { set => SetBool(UseSelection, value); get => GetBool(UseSelection); }
+
+    public static float trailOffset
+    { set => SetFloat(TrailOffset, value); get => GetFloat(TrailOffset); }
+
+    public static float handleSize
+    { set => SetFloat(HandleSize, value); get => GetFloat(HandleSize); }
 
     public static int rtypeIndex
     { set => SetInt(RTypeIndex, value); get => GetInt(RTypeIndex); }

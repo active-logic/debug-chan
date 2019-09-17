@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Active.Log{
+namespace Activ.Prolog{
 public readonly struct Filter{
 
     const string NoSel = "(no sel)";

@@ -2,7 +2,7 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Active.Log{
+namespace Activ.Prolog{
 public class History{
 
     public List<Frame> frames { get; private set; }

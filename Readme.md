@@ -2,7 +2,8 @@
 
 Prolog is an automated logger for C# and Unity 3D:
 - Log every function call (with custom exclusions)
-- Display logs interactively, with an option to view logs on a per game object basis
+- Display logs interactively, with an option to view logs on a per game object basis.
+- Review call history from scene view
 - Log to file
 
 Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); sources and build targets (iOS/standalone/etc) are not modified.
@@ -61,7 +62,6 @@ Open the console via *Window > Activ > Prolog*; options:
 Aside from minor formatting and stability improvements, the following are considered:
 
 - Exclude non public calls when processing a target module. Helps with logging stable APIs.
-- Interactively navigate beyond the latest 1000 lines
 - Log stack-trees
 - Log parameters and return values
 - Breakpoints
