@@ -24,10 +24,10 @@ public class Message{
     public string sourceType => source?.GetType().Name ?? _sourceType;
 
     public static bool operator % (Message x, Message y)
-    =>  x.message     == y.message &&
-        x.source      == y.source &&
-        x.owner.name  == y.owner.name &&
-        x._sourceType == y._sourceType;
+    =>    x.message     == y.message
+       && x.source      == y.source
+       && x.owner?.name == y.owner?.name
+       && x._sourceType == y._sourceType;
 
     override public string ToString()
     => $"{frame} {owner} {sourceType} {message}";
