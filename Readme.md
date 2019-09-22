@@ -6,6 +6,8 @@ Prolog is an automated logger for C# and Unity 3D:
 - Review call history from scene view
 - Log to file
 
+![Prolog](https://github.com/active-logic/Media/blob/master/Prolog/Prolog.png)
+
 Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); sources and build targets (iOS/standalone/etc) are not modified.
 
 ## Requirements
