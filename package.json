@@ -1,0 +1,26 @@
+{
+  "name": "com.activ.prolog",
+  "version": "0.2.1",
+  "displayName": "Prolog",
+  "description": "Automated logger and interactive console",
+  "unity": "2018.4",
+  "unityRelease": "8f1",
+  "dependencies": {
+    "nuget.mono-cecil": "0.1.6-preview"
+  },
+  "keywords": [
+    "logger",
+    "injection",
+    "debugger",
+    "console"
+  ],
+  "author": {
+    "name": "T.E.A de Souza",
+    "email": "active.behaviours@gmail.com",
+    "url": "https://github.com/active-logic"
+  },
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/active-logic/prolog.git"
+  }
+}
