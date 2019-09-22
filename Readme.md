@@ -18,11 +18,15 @@ Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); 
 
 ### Using the Unity Package Manager (UPM)
 
-If you do not need to modify the source, add `"com.activ.prolog": "https://github.com/active-logic/prolog.git"` to your projects' *Packages/manifest.json*. Otherwise...
+If you do not need to modify the source: 
+
+- Add `"com.activ.prolog": "https://github.com/active-logic/prolog.git"` to your projects' *Packages/manifest.json* and restart Unity. 
+
+Otherwise...
 
 - Clone the repository outside of your project.
 - Open your project and the package manager window (*window > package manager*)
-- Using the [+] button (top-left) choose add from disk and locate **package.json** add the root of this repository
+- Using the [+] button (top-left) choose add from disk and locate **package.json** at the root of the cloned repository
 - Package and dependencies will import automatically.
 
 ### Legacy package import
