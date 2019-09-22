@@ -6,7 +6,7 @@ Prolog is an automated logger for C# and Unity 3D:
 - Review call history from scene view
 - Log to file
 
-![Prolog](https://github.com/active-logic/Media/blob/master/Prolog/Prolog.png)
+<img src = "https://github.com/active-logic/Media/blob/master/Prolog/Prolog.png" width="600" align="middle" />
 
 Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); sources and build targets (iOS/standalone/etc) are not modified.
 
@@ -20,15 +20,11 @@ Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); 
 
 ### Using the Unity Package Manager (UPM)
 
-If you do not need to modify the source: 
-
-- Add `"com.activ.prolog": "https://github.com/active-logic/prolog.git"` to your projects' *Packages/manifest.json* and restart Unity. 
-
-Otherwise...
+If you do not need to modify the source, add `"com.activ.prolog": "https://github.com/active-logic/prolog.git"` to your projects' *Packages/manifest.json*. Otherwise...
 
 - Clone the repository outside of your project.
 - Open your project and the package manager window (*window > package manager*)
-- Using the [+] button (top-left) choose add from disk and locate **package.json** at the root of the cloned repository
+- Using the [+] button (top-left) choose add from disk and locate **package.json** add the root of this repository
 - Package and dependencies will import automatically.
 
 ### Legacy package import
