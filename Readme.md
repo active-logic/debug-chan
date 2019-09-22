@@ -12,14 +12,24 @@ Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); 
 
 - Unity 2018 or later
 - C# 7.2 or later
-- Mono.Cecil (included)
+- Mono.Cecil
 
 ## Install
 
-- Download the latest [release](https://github.com/active-logic/prolog/releases) and drag the package into your project.
-- Delete all `*.csproj` files at the root of your project (relative to the `Assets` folder, this is the parent directory); recommended because earlier versions of Unity (or IDEs) may build assemblies in unexpected locations.
+### Using the Unity Package Manager (UPM)
 
-To uninstall, delete the `Prolog` directory from your project.
+- Clone the repository
+- Open your project and the package manager window (*window > package manager*)
+- Using the [+] button (top-left) choose add from disk and locate **package.json** add the root of this repository
+- Package and dependencies will import automatically.
+
+### Legacy package import
+
+- Download the latest [release](https://github.com/active-logic/prolog/releases) and drag the package into your project.
+
+### Setup
+
+Delete all `*.csproj` files at the root of your project (relative to the `Assets` folder, this is the parent directory); recommended because earlier versions of Unity (or IDEs) may build assemblies in unexpected locations.
 
 ## Configuration
 
@@ -27,7 +37,6 @@ To uninstall, delete the `Prolog` directory from your project.
 
 In addition of exclusion paths, the following switches are supported:
 
-- `--disable`: disable logging (also available in GUI)
 - `--file`: log to *Assets/log.txt*.
 
 Here is a sample configuration file:
