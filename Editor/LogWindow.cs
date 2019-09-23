@@ -135,7 +135,7 @@ public class LogWindow : EditorWindow{
         SceneView.RepaintAll();
     }
 
-    [MenuItem("Window/Prolog")]
+    [MenuItem("Window/Activ/Prolog")]
     static void Init(){
         instance = (LogWindow)EditorWindow
                    .GetWindow<LogWindow>(title: "Prolog");
