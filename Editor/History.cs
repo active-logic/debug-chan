@@ -12,7 +12,7 @@ public class History{
     public History(string path = null){
         this.path   = path;
         this.frames = new List<Frame>();
-        if(path != null) File.Delete(path);
+        if(path != null){ File.Delete(path); File.Delete(path + ".meta"); }
     }
 
     public History(Filter filter){
