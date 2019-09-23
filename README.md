@@ -6,8 +6,6 @@ Prolog is an automated logger for C# and Unity 3D:
 - Review call history from scene view
 - Log to file
 
-<img src = "https://github.com/active-logic/Media/blob/master/Prolog/Prolog.png" width="600" align="middle" />
-
 Assemblies are instrumented via [Mono.Cecil](https://github.com/jbevain/cecil); sources and build targets (iOS/standalone/etc) are not modified.
 
 ## Requirements
@@ -58,11 +56,20 @@ Bar.Print  # Don't log Bar.Print(...) overloads (ignores namespaces)
 
 ## Console window
 
+<img src = "https://github.com/active-logic/Media/blob/master/Prolog/Prolog.png" width="600" align="middle" />
+
 Open the console via *Window > Activ > Prolog*; options:
 
-- *Enable logging* - uncheck to disable logging (scripts will be recompiled)
 - *Use selection* - only view logs for the active game object.
-- *History* - when checked, show the history; otherwise, only report the current frame (available while pausing).
+- *History* - when checked, show the history; otherwise, only report the current frame (effective while paused).
+- *History browser controls* - move to the previous/next key frame (effective while paused)
+- *Step* - pause execution at the next key-frame
+- *Enable logging* - uncheck to disable logging (scripts will be recompiled)
+- *Clear* - Clear the log; also clears history trails from scene view. Does not delete *log.txt*
+- *Trail offset* - Vertical offset for history trails in scene view (use to prevent trails from sinking into the ground)
+- *Size* - Size of keyframe handles in scene view
+
+*NOTE: in Prolog, a* keyframe *is defined as the first of a sequence where each frame generates the same sequence of instructions*
 
 ## Limitations
 
