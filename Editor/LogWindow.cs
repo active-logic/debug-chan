@@ -144,9 +144,11 @@ public class LogWindow : EditorWindow{
 
     static Font font{ get{
         if(_font) return _font;
-        var avail = new []{ "Menlo", "Consolas", "Courier", "Courier New",
-                            "Lucida Console", "Monaco", "Inconsolata"      }
-            .Intersect(Font.GetOSInstalledFontNames()).First();
+        var avail = new []{
+            "Menlo", "Consolas", "Inconsolata", "Bitstream Vera Sans Mono",
+            "Oxygen Mono", "Ubuntu Mono", "Cousine", "Courier", "Courier New",
+            "Lucida Console", "Monaco"
+        }.Intersect(Font.GetOSInstalledFontNames()).First();
         return _font = Font.CreateDynamicFontFromOSFont(avail, FontSize);
     }}
 
