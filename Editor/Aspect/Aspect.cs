@@ -87,9 +87,11 @@ public static class Aspect{
      * [ this    , [+/-]methodName, Log       ]
      */
     static bool IsInjected(MethodDefinition m){
+        if(m.Body.Instructions.Count < 2) return false;
         var i = m.Body.Instructions[1];
         return i.OpCode == OpCodes.Ldstr
             && i.Operand is string s
+            && s.Length > 1
             && s.Substring(1).StartsWith(m.Name);
 
     }
