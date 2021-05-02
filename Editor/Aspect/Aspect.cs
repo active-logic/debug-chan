@@ -71,8 +71,14 @@ public static class Aspect{
                     Inject(type, method);
                 } ptc++;
             }
-        } module.Write(path);
-        print($"...injected {ptc}/{tc} public types");
+        }
+        // TODO clarify error cause
+        try{
+            module.Write(path);
+            print( $"@{path}... injected {ptc}/{tc} public types");
+        }catch(AssemblyResolutionException ex){
+            Debug.LogWarning($"Cannot inject module {module}");
+        }
     }
 
     /*
