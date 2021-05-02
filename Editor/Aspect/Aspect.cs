@@ -22,16 +22,35 @@ public static class Aspect{
     }
 
     static void ProcessFile(string path){
+        if(path .Contains("VRM"))
+            { print($"Skip VRM assembly");                 return; }
+        if(path .Contains("Runtime.dll"))
+            { print($"Skip: {path}");                 return; }
+        if(path .Contains("UnityEditor.UI"))
+            { print($"Skip: {path}");                 return; }
+        if(path.Contains("UnityEngine.UI"))
+            { print($"Skip: {path}");                 return; }
+        if(path.Contains("Assembly-CSharp"))
+            { print($"Skip C#: {path}");                 return; }
         if(path.EndsWith(self))
             { print($"Skip self: {self}");                 return; }
         if(path.ToLower().Contains("test"))
             { print($"Skip likely unit tests: {path}");    return; }
         if(path.ToLower().Contains("unity."))
             { print($"Skip likely Engine module: {path}"); return; }
+        if(path.ToLower().Contains("unityeditor."))
+                { print($"Skip likely Editor module: {path}"); return; }
         if(path.EndsWith("Assembly-CSharp-Editor.dll"))
             { print($"Skip editor scripts: {path}");       return; }
-        var module  = ModuleDefinition.ReadModule
-                              (path, new ReaderParameters { InMemory = true });
+        ModuleDefinition module;
+        try{
+            module  = ModuleDefinition.ReadModule
+                          (path,
+                           new ReaderParameters { InMemory = true });
+        }catch(System.BadImageFormatException ex){
+            Debug.LogWarning($"Bad image: {path}\n{ex}");
+            return;
+        }
         int tc  = module.Types.Count;
         int ptc = 0;
         foreach (var type in module.Types){
