@@ -6,11 +6,13 @@ using static Activ.Prolog.LogWindowModel;
 using static Activ.Prolog.Config;
 using Ed = UnityEditor.EditorApplication;
 using GL = UnityEngine.GUILayout;
+using EGL = UnityEditor.EditorGUILayout;
 
 namespace Activ.Prolog{
 public class LogWindow : EditorWindow{
 
     const int FontSize = 13;
+    const float ScrubberButtonsHeight = 24f;
     public static LogWindow instance;
     //
     static Font     _font;
@@ -41,9 +43,29 @@ public class LogWindow : EditorWindow{
     }
 
     void OnGUI(){
-        if(!Config.enable)
-        { Config.enable = ToggleLeft("Enable Logging", Config.enable); return; }
-        //
+        if(PrologConfigManager.current == null){
+            if(GL.Button("Create Prolog config")){
+                PrologConfigManager.Create();
+            }
+            return;
+        }
+        if(!Config.enable){
+            Config.enable = ToggleLeft("Enable Logging", Config.enable);
+        }else{
+            OnGUI_Content();
+        }
+        DrawConfigManager();
+    }
+
+    void DrawConfigManager(){
+        var selected = EGL.ObjectField(
+            PrologConfigManager.current,
+            typeof(PrologConfig),
+            allowSceneObjects: false);
+        PrologConfigManager.current = selected as PrologConfig;
+    }
+
+    void OnGUI_Content(){
         model.current = Selection.activeGameObject;
         instance = this;
         BeginHorizontal();
@@ -60,16 +82,19 @@ public class LogWindow : EditorWindow{
         if(!Config.useSelection) model.current = null;
         BeginHorizontal();
         int frameNo = browsing ? selectedFrame.index : Time.frameCount;
-        if(GL.Button("˂", GL.ExpandWidth(false))) SelectPrev();
-        GL.Button($"#{frameNo}", GL.MaxWidth(48f));
-        if(GL.Button("˃", GL.ExpandWidth(false))) SelectNext();
+        var style = GUI.skin.button;
+        var prevFont = style.font;
+        style.font = monofont;
+        if(GL.Button("˂", GL.ExpandWidth(false), GL.MinHeight(ScrubberButtonsHeight))) SelectPrev();
+        GL.Button($"#{frameNo:0000}", GL.MaxWidth(64f), GL.MinHeight(ScrubberButtonsHeight));
+        if(GL.Button("˃", GL.ExpandWidth(false), GL.MinHeight(ScrubberButtonsHeight))) SelectNext();
+        style.font = prevFont;
         GL.FlexibleSpace();
         Config.step = ToggleLeft("Step", Config.step, GL.MaxWidth(48f));
         EndHorizontal();
         scroll = BeginScrollView(scroll);
         GUI.backgroundColor = Color.black;
-        var style = GUI.skin.textArea;
-        var f = font;
+        var f = monofont;
         if(f == null) Debug.LogError("font not available");
         style.font = f;
         style.fontSize = FontSize;
@@ -142,7 +167,7 @@ public class LogWindow : EditorWindow{
         instance.Show();
     }
 
-    static Font font{ get{
+    static Font monofont{ get{
         if(_font) return _font;
         var avail = new []{
             "Menlo", "Consolas", "Inconsolata", "Bitstream Vera Sans Mono",

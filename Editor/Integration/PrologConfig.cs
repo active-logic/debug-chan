@@ -12,7 +12,7 @@ namespace Activ.Prolog{
 )] public partial class PrologConfig : ScriptableObject{
 
     const string Path = "Assets/prolog.asset";
-    static PrologConfig ι;
+    public static PrologConfig ι;
     public List<Assembly> assemblies;
     public List<TypeExclusion> typeExclusions;
 
@@ -23,7 +23,7 @@ namespace Activ.Prolog{
     => instance.typeExclusions.Exists( e => e.Matches(fqn));
 
     static PrologConfig instance => ι != null
-        ? ι :  (ι = ADB.LoadAssetAtPath<PrologConfig>(Path));
+        ? ι :  (ι = PrologConfigManager.current);
 
     void OnValidate(){
         AddMissing();

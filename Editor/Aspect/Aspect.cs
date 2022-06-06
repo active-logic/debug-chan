@@ -11,7 +11,7 @@ namespace Activ.Prolog.IL{
 public static class Aspect{
 
     static bool   verbose = false;
-    const  string root    = "Library/ScriptAssemblies/",
+    const  string root    =  "Library/ScriptAssemblies/",
                   self    = "Activ.Prolog.dll";
 
     [UnityEditor.Callbacks.DidReloadScripts]

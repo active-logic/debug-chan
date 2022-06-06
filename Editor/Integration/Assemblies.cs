@@ -21,9 +21,8 @@ public static class Assemblies{
         return !(
             x.Contains("unity")
             || x.Contains("active.logic")
-            || x == "assembly-csharp.dll"
+            || x == "assembly-csharp-editor.dll"
             || x == "activ.prolog.dll"
-            || x == "FOOOOO"
         );
     }
 
