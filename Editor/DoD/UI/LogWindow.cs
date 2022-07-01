@@ -28,6 +28,7 @@ public class LogWindow : EditorWindow{
     }
 
     public static void OnMessage(Message message){
+        Debug.Log($"Got message {message}");
         if(Application.isPlaying && instance){
             instance.model.current = Selection.activeGameObject;
             instance.DoUpdate(message);
@@ -49,37 +50,62 @@ public class LogWindow : EditorWindow{
             }
             return;
         }
-        if(!Config.enable){
-            Config.enable = ToggleLeft("Enable Logging", Config.enable);
-        }else{
-            OnGUI_Content();
+        if(!Config.enableInjection){
+            Config.enableInjection = ToggleLeft("Instrument", Config.enableInjection);
         }
+        OnGUI_Content();
         DrawConfigManager();
-    }
-
-    void DrawConfigManager(){
-        var selected = EGL.ObjectField(
-            PrologConfigManager.current,
-            typeof(PrologConfig),
-            allowSceneObjects: false);
-        PrologConfigManager.current = selected as PrologConfig;
     }
 
     void OnGUI_Content(){
         model.current = Selection.activeGameObject;
         instance = this;
+        DrawToggles();
+        DrawScrubber();
+        DrawText();
+        DrawConfig();
+    }
+
+    void DrawText(){
+        scroll = BeginScrollView(scroll);
+        GUI.backgroundColor = Color.black;
+        ConfigTextAreaStyle();
+        string log = model.Output(useHistory, rtypeOptions[Config.rtypeIndex]);
+        if(currentLog != log && Config.step) Ed.isPaused = true;
+        currentLog = log;
+        GL.TextArea(browsing ? selectedFrame.Format() : log,
+                           GL.ExpandHeight(true));
+        EndScrollView();
+        GUI.backgroundColor = Color.white;
+    }
+
+    void ConfigTextAreaStyle(){
+        var f = monofont;
+        if(f == null) Debug.LogError("font not available");
+        var style = GUI.skin.button;
+        style.font = f;
+        style.fontSize = FontSize;
+        style.normal.textColor  = Color.white * 0.9f;
+        style.focused.textColor = Color.white;
+        style.focused.textColor = Color.white;
+    }
+
+    void DrawToggles(){
         BeginHorizontal();
         Config.useSelection = ToggleLeft("Use Selection", Config.useSelection,
                                          GL.MaxWidth(90f));
         Config.allFrames    = ToggleLeft("History",  Config.allFrames,
                                          GL.MaxWidth(60));
         // TODO - make return type filtering available with the global history
-        if(model.applicableSelection){
+        if(model.selection){
             GL.Label("→", GL.MaxWidth(25f));
             Config.rtypeIndex = Popup(Config.rtypeIndex, rtypeOptions);
         }
         EndHorizontal();
         if(!Config.useSelection) model.current = null;
+    }
+
+    void DrawScrubber(){
         BeginHorizontal();
         int frameNo = browsing ? selectedFrame.index : Time.frameCount;
         var style = GUI.skin.button;
@@ -92,26 +118,13 @@ public class LogWindow : EditorWindow{
         GL.FlexibleSpace();
         Config.step = ToggleLeft("Step", Config.step, GL.MaxWidth(48f));
         EndHorizontal();
-        scroll = BeginScrollView(scroll);
-        GUI.backgroundColor = Color.black;
-        var f = monofont;
-        if(f == null) Debug.LogError("font not available");
-        style.font = f;
-        style.fontSize = FontSize;
-        style.normal.textColor  = Color.white * 0.9f;
-        style.focused.textColor = Color.white;
-        style.focused.textColor = Color.white;
-        string log = model.Output(useHistory, rtypeOptions[Config.rtypeIndex]);
-        if(currentLog != log && Config.step) Ed.isPaused = true;
-        currentLog = log;
-        GL.TextArea(browsing ? selectedFrame.Format() : log,
-                           GL.ExpandHeight(true));
-        EndScrollView();
-        GUI.backgroundColor = Color.white;
+    }
+
+    void DrawConfig(){
         BeginHorizontal();
-        Config.enable = ToggleLeft(
+        Config.enableInjection = ToggleLeft(
             $"Enable Logging ({Logger.injectionTimeMs}ms)",
-            Config.enable, GL.ExpandWidth(true));
+            Config.enableInjection, GL.ExpandWidth(true));
         if(!Application.isPlaying){
             if(GL.Button($"Clear", GL.MaxWidth(90f))) Clear();
         }
@@ -123,6 +136,14 @@ public class LogWindow : EditorWindow{
         GL.Label("Size: ", GL.MaxWidth(30f));
         Config.handleSize = FloatField(Config.handleSize, GL.MaxWidth(30f));
         EndHorizontal();
+    }
+
+    void DrawConfigManager(){
+        var selected = EGL.ObjectField(
+            PrologConfigManager.current,
+            typeof(PrologConfig),
+            allowSceneObjects: false);
+        PrologConfigManager.current = selected as PrologConfig;
     }
 
     // Ref https://tinyurl.com/yyo8c35g which also demonstrates starting a 2D

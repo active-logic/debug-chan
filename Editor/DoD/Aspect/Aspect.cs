@@ -10,14 +10,14 @@ using static Activ.Prolog.IL.Injector;
 namespace Activ.Prolog.IL{
 public static class Aspect{
 
-    static bool   verbose = false;
+    static bool   verbose = true;
     const  string root    =  "Library/ScriptAssemblies/",
                   self    = "Activ.Prolog.dll";
 
     [UnityEditor.Callbacks.DidReloadScripts]
     public static void Process(){
-        if(!Config.enable){ print("Logging disabled; do not inject"); return; }
-        foreach (File f in PrologConfig.dlls){
+        if(!Config.enableInjection){ print("Logging disabled; do not inject"); return; }
+        foreach (File f in PrologConfig.enabledAssemblies){
             ProcessFile(root + f.Name);
         }
     }
@@ -41,6 +41,7 @@ public static class Aspect{
                 continue;
             }
             if (type.IsPublic){
+                print($"Process type: {type.Name}");
                 foreach(MethodDefinition method in type.Methods){
                     // Note: interface and abstract methods do not have a body
                     if( method.IsConstructor

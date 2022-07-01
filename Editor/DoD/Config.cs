@@ -16,12 +16,19 @@ public class Config : AssetPostprocessor{
 
     public static bool logToFile => elements?.Contains(FileFlag) ?? false;
 
-    public static bool enable{
+    public static bool enableInjection{
         set{
-            if(value == enable) return;
+            if(value == enableInjection) return;
             SetBool(EnableLogging, value);
             Recompile.Apply();
-        } get => GetBool(EnableLogging);
+        }get{
+            try{
+                return GetBool(EnableLogging);
+            }catch(System.Exception){
+                //UnityEngine.Debug.Log(ex)
+                return false;
+            }
+        }
     }
 
     public static bool allFrames

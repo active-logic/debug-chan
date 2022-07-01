@@ -16,8 +16,13 @@ namespace Activ.Prolog{
     public List<Assembly> assemblies;
     public List<TypeExclusion> typeExclusions;
 
+    public static IEnumerable<File> enabledAssemblies
+    => from Assembly x in instance.assemblies
+       where x.inject select x.file;
+
     public static IEnumerable<File> dlls
-    => from Assembly x in instance.assemblies select x.file;
+    => from Assembly x in instance.assemblies
+       select x.file;
 
     public static bool Exclude(string fqn)
     => instance.typeExclusions.Exists( e => e.Matches(fqn));
