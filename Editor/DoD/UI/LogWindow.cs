@@ -28,7 +28,6 @@ public class LogWindow : EditorWindow{
     }
 
     public static void OnMessage(Message message){
-        Debug.Log($"Got message {message}");
         if(Application.isPlaying && instance){
             instance.model.current = Selection.activeGameObject;
             instance.DoUpdate(message);
@@ -62,18 +61,34 @@ public class LogWindow : EditorWindow{
         instance = this;
         DrawToggles();
         DrawScrubber();
-        DrawText();
+        if(Config.enableInjection) DrawDebuggerTextView();
+        DrawLoggerTextView();
         DrawConfig();
     }
 
-    void DrawText(){
-        scroll = BeginScrollView(scroll);
-        GUI.backgroundColor = Color.black;
-        ConfigTextAreaStyle();
+    void DrawLoggerTextView(){
+        var logger = (Activ.LogChan.MessageLogger) DebugChan.logger;
+        var sel = model.selection;
+        if(!useSelection) sel = null;
+        var text = logger?.lastFrame?.Format(sel) ?? "No messages";
+        if(useSelection && sel != null){
+            text = sel.name + "\n\n" + text;
+        }
+        DrawTextView(text);
+    }
+
+    void DrawDebuggerTextView(){
         string log = model.Output(useHistory, rtypeOptions[Config.rtypeIndex]);
         if(currentLog != log && Config.step) Ed.isPaused = true;
         currentLog = log;
-        GL.TextArea(browsing ? selectedFrame.Format() : log,
+        DrawTextView(log);
+    }
+
+    void DrawTextView(string text){
+        scroll = BeginScrollView(scroll);
+        GUI.backgroundColor = Color.black;
+        ConfigTextAreaStyle();
+        GL.TextArea(browsing ? selectedFrame.Format() : text,
                            GL.ExpandHeight(true));
         EndScrollView();
         GUI.backgroundColor = Color.white;

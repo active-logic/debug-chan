@@ -10,7 +10,7 @@ using static Activ.Prolog.IL.Injector;
 namespace Activ.Prolog.IL{
 public static class Aspect{
 
-    static bool   verbose = true;
+    static bool   verbose = false;
     const  string root    =  "Library/ScriptAssemblies/",
                   self    = "Activ.Prolog.dll";
 
