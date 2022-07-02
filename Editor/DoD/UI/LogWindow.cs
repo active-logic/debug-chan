@@ -24,10 +24,17 @@ public class LogWindow : EditorWindow{
 
     LogWindow(){
         Ed.pauseStateChanged +=
-                   (PauseState s) => { if(s == PauseState.Paused) Repaint(); };
+            (PauseState s) => { if(s == PauseState.Paused) Repaint(); };
+        Activ.LogChan.MessageLogger.messageReceived += OnMessage;
     }
 
-    public static void OnMessage(Message message){
+    public void OnMessage(object sender, Activ.LogChan.Message message){
+        if(Application.isPlaying && instance){
+            instance.DoUpdate(null);
+        }
+    }
+
+    public static void OnMessage(object sender, Message message){
         if(Application.isPlaying && instance){
             instance.model.current = Selection.activeGameObject;
             instance.DoUpdate(message);

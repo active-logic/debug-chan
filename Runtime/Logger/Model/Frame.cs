@@ -11,8 +11,11 @@ public class Frame{
 
     public Frame(int index) => this.index = index;
 
-    public void Log(string message, object source)
-    => messages.Add(new Message(message, source));
+    public Message Log(string message, object source){
+        var messageObj = new Message(message, source);
+        messages.Add(messageObj);
+        return messageObj;
+    }
 
     public string Format(){
         var @out = new StringBuilder();
