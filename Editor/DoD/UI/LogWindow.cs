@@ -77,7 +77,7 @@ public class LogWindow : EditorWindow{
         var logger = (Activ.LogChan.MessageLogger) DebugChan.logger;
         var sel = model.selection;
         if(!useSelection) sel = null;
-        var text = logger?.lastFrame?.Format(sel) ?? "No messages";
+        var text = logger?.current?.Format(sel) ?? "No messages";
         if(useSelection && sel != null){
             text = sel.name + "\n\n" + text;
         }

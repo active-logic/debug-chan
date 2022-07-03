@@ -7,7 +7,7 @@ namespace Activ.LogChan{
 public class Frame{
 
     public readonly int index;
-    public readonly List<Message> messages = new List<Message>();
+    public readonly List<Message> messages = new List<Message>(0);
 
     public Frame(int index) => this.index = index;
 
