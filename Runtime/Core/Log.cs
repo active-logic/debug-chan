@@ -16,11 +16,10 @@ public class Log<T>{
         }else if(time > current.time){
             FinalizeCurrentFrame();
             current = new Frame<T>(time);
-        }else if(time == current.time){
-            current.Add(message);
-        }else{
+        }else if(time != current.time){
             throw new Ex("Cannot log to prior frame");
         }
+        current.Add(message);
     }
 
     public string Format() => ranges.Format();
