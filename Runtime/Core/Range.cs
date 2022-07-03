@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Activ.Loggr{
 /* Spans contiguous frames holding equivalent content */
-public class Range<T>{
+public class Range<T> : Formatting{
 
     public readonly Stamp start;
     public Stamp end {get; private set;}
@@ -24,5 +24,9 @@ public class Range<T>{
         end = arg.time;
         return true;
     }
+
+    public string Format() => FormatSpan() + "\n" + messages.Format();
+
+    string FormatSpan() => start.frame + " => " + end.frame;
 
 }}

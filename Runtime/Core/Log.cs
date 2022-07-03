@@ -1,3 +1,4 @@
+using UnityEngine;  // for UnityEngine.Time
 using System.Collections.Generic;
 using Ex = System.Exception;
 
@@ -5,19 +6,24 @@ namespace Activ.Loggr{
 /* Stores message associated with an implied source */
 public class Log<T>{
 
-    Frame<T> current;
+    public Frame<T> current { get; private set; }
     List<Range<T>> ranges = new List<Range<T>>();
 
     public void LogMessage(T message){
-        var time = new Stamp();
-        if(time == current.time){
-            current.Add(message);
-        }else if(time > current.time){
+        var time = new Stamp(Time.frameCount, Time.time);
+        if(current == null){
             current = new Frame<T>(time);
+        }else if(time > current.time){
+            FinalizeCurrentFrame();
+            current = new Frame<T>(time);
+        }else if(time == current.time){
+            current.Add(message);
         }else{
             throw new Ex("Cannot log to prior frame");
         }
     }
+
+    public string Format() => ranges.Format();
 
     void FinalizeCurrentFrame(){
         if(current == null) return;

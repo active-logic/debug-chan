@@ -1,14 +1,14 @@
-using UnityEngine;
+//using UnityEngine;
 
 namespace Activ.Loggr{
-public readonly struct Stamp{
+public class Stamp{
 
-    readonly int frame;
-    readonly float time;
+    public readonly int frame;
+    public readonly float time;
 
     public Stamp(int frame, float time){
-        this.frame = Time.frameCount;
-        this.time = Time.time;
+        this.frame = frame;
+        this.time = time;
     }
 
     public override bool Equals(object other){
@@ -19,6 +19,12 @@ public readonly struct Stamp{
     }
 
     public override int GetHashCode() => frame;
+
+    public static implicit operator Stamp(int arg)
+    => new Stamp(arg, -1f);
+
+    public static implicit operator int(Stamp arg)
+    => arg.frame;
 
     public static Stamp operator + (Stamp x, int y)
     => new Stamp(x.frame + y, x.time);

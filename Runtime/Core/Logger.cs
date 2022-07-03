@@ -16,6 +16,16 @@ public class Logger<T, S>{
         messageReceived?.Invoke(message, source);
     }
 
+    public Frame<T> CurrentFrame(S source){
+        if(logs.TryGetValue(source, out Log<T> log)){
+            return log.current;
+        }else{
+            return null;
+        }
+    }
+
+    public Log<T> this[S source] => logs[source];
+
     // -------------------------------------------------------------
 
     public delegate void MessageEventHandler(T message, S source);

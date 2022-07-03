@@ -25,15 +25,17 @@ public class LogWindow : EditorWindow{
     LogWindow(){
         Ed.pauseStateChanged +=
             (PauseState s) => { if(s == PauseState.Paused) Repaint(); };
-        Activ.LogChan.MessageLogger.messageReceived += OnMessage;
+        Activ.Loggr.Logger<string, object>.messageReceived += OnMessage;
     }
 
-    public void OnMessage(object sender, Activ.LogChan.Message message){
+    // From DebugChan
+    public void OnMessage(string message, object sender){
         if(Application.isPlaying && instance){
             instance.DoUpdate(null);
         }
     }
 
+    // From Prolog
     public static void OnMessage(object sender, Message message){
         if(Application.isPlaying && instance){
             instance.model.current = Selection.activeGameObject;
@@ -74,14 +76,23 @@ public class LogWindow : EditorWindow{
     }
 
     void DrawLoggerTextView(){
-        var logger = (Activ.LogChan.MessageLogger) DebugChan.logger;
-        var sel = model.selection;
-        if(!useSelection) sel = null;
-        var text = logger?.current?.Format(sel) ?? "No messages";
-        if(useSelection && sel != null){
-            text = sel.name + "\n\n" + text;
+        var logger = (Activ.Loggr.Logger<string, object>) DebugChan.logger;
+        if(logger == null){
+            DrawTextView("Not running");
+            return;
         }
-        DrawTextView(text);
+        if(!useSelection || model.selection == null){
+            DrawTextView("No selection");
+            return;
+        }
+        if(useHistory && Ed.isPaused){
+            var text = logger[model.selection]?.Format() ?? "No messages";
+            DrawTextView(model.selection.name + "\n\n" + text);
+        }else{
+            var frame = logger.CurrentFrame(model.selection);
+            var text = frame?.Format() ?? "No messages";
+            DrawTextView(model.selection.name + "\n\n" + text);
+        }
     }
 
     void DrawDebuggerTextView(){

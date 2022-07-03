@@ -10,4 +10,6 @@ public class Frame<T>{
 
     public void Add(T message) => messages.Add(message);
 
+    public string Format() => messages.Format();
+
 }}
