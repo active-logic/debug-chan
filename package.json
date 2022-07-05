@@ -1,8 +1,8 @@
 {
-  "name": "com.activ.prolog",
-  "version": "0.2.1",
-  "displayName": "Prolog",
-  "description": "Automated logger and interactive console",
+  "name": "com.activ.debug-chan",
+  "version": "0.3.0",
+  "displayName": "Debug-Chan",
+  "description": "Loggers, instrumentation, interactive console",
   "unity": "2018.4",
   "unityRelease": "8f1",
   "dependencies": {
@@ -12,17 +12,19 @@
     "logger",
     "injection",
     "debugger",
-    "console"
+    "console",
+    "debugging",
+    "Unity"
   ],
   "author": {
-    "name": "T.E.A de Souza",
+    "name": "Activ", "T.E.A. de Souza"
     "email": "active.behaviours@gmail.com",
     "url": "https://github.com/active-logic"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/active-logic/prolog.git"
+    "url": "https://github.com/eelstork/Debug-Chan.git"
   },
-  "type": "library",
+  "type": "tool",
   "hideInEditor": false
 }
