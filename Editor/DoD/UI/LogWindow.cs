@@ -15,6 +15,7 @@ public class LogWindow : EditorWindow{
     const float ScrubberButtonsHeight = 24f;
     public static LogWindow instance;
     //
+    static Font normalButtonFont;
     static Font     _font;
     LogWindowModel model = LogWindowModel.instance;
     Frame          selectedFrame;   // Last selected frame object
@@ -30,14 +31,14 @@ public class LogWindow : EditorWindow{
 
     // From DebugChan
     public void OnMessage(string message, object sender){
-        if(Application.isPlaying && instance){
+        if(isPlaying && instance){
             instance.DoUpdate(null);
         }
     }
 
     // From Prolog
     public static void OnMessage(object sender, Message message){
-        if(Application.isPlaying && instance){
+        if(isPlaying && instance){
             instance.model.current = Selection.activeGameObject;
             instance.DoUpdate(message);
         }
@@ -58,21 +59,19 @@ public class LogWindow : EditorWindow{
             }
             return;
         }
-        if(!Config.enableInjection){
-            Config.enableInjection = ToggleLeft("Instrument", Config.enableInjection);
-        }
         OnGUI_Content();
-        DrawConfigManager();
+        // TODO move somewhere else
+        // DrawConfigManager();
     }
 
     void OnGUI_Content(){
         model.current = Selection.activeGameObject;
         instance = this;
-        DrawToggles();
         DrawScrubber();
         if(Config.enableInjection) DrawDebuggerTextView();
         DrawLoggerTextView();
-        DrawConfig();
+        DrawToggles();
+        //DrawTrailsConfig();
     }
 
     void DrawLoggerTextView(){
@@ -126,14 +125,24 @@ public class LogWindow : EditorWindow{
     void DrawToggles(){
         BeginHorizontal();
         Config.useSelection = ToggleLeft("Use Selection", Config.useSelection,
-                                         GL.MaxWidth(90f));
+                                         GL.MaxWidth(100f));
         Config.allFrames    = ToggleLeft("History",  Config.allFrames,
                                          GL.MaxWidth(60));
+        //
+        GL.FlexibleSpace();
+        //
+        GL.Label("Trails - offset: ", GL.MaxWidth(88f));
+        Config.trailOffset = FloatField(Config.trailOffset,
+                                        GL.MaxWidth(30f));
+        GL.Label("size: ", GL.MaxWidth(30f));
+        Config.handleSize = FloatField(Config.handleSize, GL.MaxWidth(30f));
+        //
         // TODO - make return type filtering available with the global history
-        if(model.selection){
-            GL.Label("→", GL.MaxWidth(25f));
-            Config.rtypeIndex = Popup(Config.rtypeIndex, rtypeOptions);
-        }
+        // TODO for Prolog update
+        //if(model.selection){
+        //    GL.Label("→", GL.MaxWidth(25f));
+        //    Config.rtypeIndex = Popup(Config.rtypeIndex, rtypeOptions);
+        //}
         EndHorizontal();
         if(!Config.useSelection) model.current = null;
     }
@@ -142,34 +151,34 @@ public class LogWindow : EditorWindow{
         BeginHorizontal();
         int frameNo = browsing ? selectedFrame.index : Time.frameCount;
         var style = GUI.skin.button;
-        var prevFont = style.font;
+        normalButtonFont = style.font;
         style.font = monofont;
-        if(GL.Button("˂", GL.ExpandWidth(false), GL.MinHeight(ScrubberButtonsHeight))) SelectPrev();
-        GL.Button($"#{frameNo:0000}", GL.MaxWidth(64f), GL.MinHeight(ScrubberButtonsHeight));
-        if(GL.Button("˃", GL.ExpandWidth(false), GL.MinHeight(ScrubberButtonsHeight))) SelectNext();
-        style.font = prevFont;
+        if(ScrubberButton("<")) SelectPrev();
+        if(isPlaying){
+            GL.Button($"#{frameNo:0000}", GL.MaxWidth(64f), GL.MinHeight(ScrubberButtonsHeight));
+        }else{
+            GL.Button($"-----", GL.MaxWidth(64f), GL.MinHeight(ScrubberButtonsHeight));
+        }
+        if(ScrubberButton(">")) SelectNext();
+        style.font = normalButtonFont;
         GL.FlexibleSpace();
-        Config.step = ToggleLeft("Step", Config.step, GL.MaxWidth(48f));
+        if(!isPlaying && ScrubberButton($"Clear")) Clear();
+        // TODO reenable
+        //Config.step = ToggleLeft("Step", Config.step, GL.MaxWidth(48f));
         EndHorizontal();
     }
 
-    void DrawConfig(){
-        BeginHorizontal();
-        Config.enableInjection = ToggleLeft(
-            $"Enable Logging ({Logger.injectionTimeMs}ms)",
-            Config.enableInjection, GL.ExpandWidth(true));
-        if(!Application.isPlaying){
-            if(GL.Button($"Clear", GL.MaxWidth(90f))) Clear();
-        }
-        EndHorizontal();
-        BeginHorizontal();
-        GL.Label("Trail offset: ", GL.MaxWidth(60f));
-        Config.trailOffset = FloatField(Config.trailOffset,
-                                        GL.MaxWidth(30f));
-        GL.Label("Size: ", GL.MaxWidth(30f));
-        Config.handleSize = FloatField(Config.handleSize, GL.MaxWidth(30f));
-        EndHorizontal();
-    }
+    bool ScrubberButton(string arg)
+    => GL.Button(arg, GL.ExpandWidth(false), GL.MinHeight(ScrubberButtonsHeight));
+
+    // TODO re-enable but move elsewhere
+    //void DrawPauseModeConfig(){
+    //    Config.enableInjection = ToggleLeft(
+    //        $"Instrument ({Logger.injectionTimeMs}ms)",
+    //        Config.enableInjection, GL.ExpandWidth(true));
+    //}
+
+    void ToggleAdvanced(){}
 
     void DrawConfigManager(){
         var selected = EGL.ObjectField(
@@ -183,7 +192,7 @@ public class LogWindow : EditorWindow{
     // GUI at handles location
     void OnSceneGUI(SceneView sceneView){
         var sel = HistoryGUI.Draw(model.filtered, selectedFrame);
-        if(Ed.isPaused || !Application.isPlaying){
+        if(Ed.isPaused || !isPlaying){
             selectedFrame = sel ?? selectedFrame;
             Repaint();
         }else{
@@ -192,7 +201,7 @@ public class LogWindow : EditorWindow{
     }
 
     void OnSelectionChange()
-    { if(Ed.isPaused || !Application.isPlaying) Repaint(); }
+    { if(Ed.isPaused || !isPlaying) Repaint(); }
 
     void Clear(){
         Logger.Clear();
@@ -232,7 +241,9 @@ public class LogWindow : EditorWindow{
     }}
 
     bool browsing
-    => (Ed.isPaused || !Application.isPlaying) && selectedFrame != null;
+    => (Ed.isPaused || !isPlaying) && selectedFrame != null;
+
+    static bool isPlaying => Application.isPlaying;
 
     bool useHistory => Config.allFrames && canUseHistory;
 
