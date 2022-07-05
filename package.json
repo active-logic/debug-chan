@@ -1,5 +1,5 @@
 {
-  "name": "com.activ.debug-chan",
+  "name": "com.activ.debugchan",
   "version": "0.3.0",
   "displayName": "Debug-Chan",
   "description": "Loggers, instrumentation, interactive console",
