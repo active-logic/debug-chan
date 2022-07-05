@@ -43,15 +43,23 @@ public class Frame{
         } return true;
     }
 
-    public string Format(int frameNo = -1){
+    public string Format(int frameNo=-1){
         var x = new StringBuilder();
-        if(messages.Count==0) return "\n(no output)\n";
-        if(frameNo>0)x.Append($"\n#{frameNo} ".PadRight(
-                                            Config.LogLineLength, '-') + '\n');
-        Message prev = null; foreach(var m in messages){
-            x.Append(MessageFormatter.Format(m, prev) + '\n'); prev = m;
+        if(messages.Count == 0) return "\n(no output)\n";
+        FormatFrameNo(frameNo, x);
+        //Message prev = null;
+        foreach(var m in messages){
+            x.Append(MessageFormatter.Format(m) + '\n');
+            // prev = m;
+            //x.Append(MessageFormatter.Format(m, prev) + '\n'); prev = m;
         }
         return x.ToString();
+    }
+
+    void FormatFrameNo(int frameNo, StringBuilder x){
+        if(frameNo < 0) return;
+        x.Append($"\n#{frameNo} "
+         .PadRight(Config.LogLineLength, '-') + '\n');
     }
 
     override public string ToString() => Format(index);

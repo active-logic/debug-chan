@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEditor;
-using static UnityEngine.Application;
+//using static UnityEngine.Application;
 using Activ.Prolog.IL;
 
 namespace Activ.Prolog{
@@ -12,8 +12,25 @@ public static class Logger{
     public static int injectionTimeMs;
     public static History history    = new History(ConfigKeys.LogPath);
     public static List<Frame> frames = new List<Frame>();
+    static bool isPlaying = false;
+
+    private static void OnPlayState(PlayModeStateChange state){
+        switch(state){
+            case PlayModeStateChange.EnteredEditMode: break;
+            case PlayModeStateChange.ExitingEditMode: break;
+            case PlayModeStateChange.EnteredPlayMode:
+                UnityEngine.Debug.Log("Noticed play start");
+                isPlaying = true;
+                break;
+            case PlayModeStateChange.ExitingPlayMode:
+                UnityEngine.Debug.Log("Noticed play ending");
+                isPlaying = false;
+                break;
+        }
+    }
 
     static Logger(){
+        EditorApplication.playModeStateChanged += OnPlayState;
         var w = Stopwatch.StartNew();
         Aspect.Process();
         injectionTimeMs = (int)w.Elapsed.TotalMilliseconds;

@@ -11,54 +11,37 @@ namespace Activ.Prolog.IL{
 public static class Aspect{
 
     static bool   verbose = false;
-    const  string root    = "Library/ScriptAssemblies/",
+    const  string root    =  "Library/ScriptAssemblies/",
                   self    = "Activ.Prolog.dll";
 
     [UnityEditor.Callbacks.DidReloadScripts]
     public static void Process(){
-        if(!Config.enable){ print("Logging disabled; do not inject"); return; }
-        foreach (File f in new Dir(root).GetFiles("*.dll"))
-            if(!Config.Exclude(f.Name)) ProcessFile(root + f.Name);
+        if(!Config.enableInjection){ print("Logging disabled; do not inject"); return; }
+        foreach (File f in PrologConfig.enabledAssemblies){
+            ProcessFile(root + f.Name);
+        }
     }
 
     static void ProcessFile(string path){
-        if(path .Contains("VRM"))
-            { print($"Skip VRM assembly");                 return; }
-        if(path .Contains("Runtime.dll"))
-            { print($"Skip: {path}");                 return; }
-        if(path .Contains("UnityEditor.UI"))
-            { print($"Skip: {path}");                 return; }
-        if(path.Contains("UnityEngine.UI"))
-            { print($"Skip: {path}");                 return; }
-        if(path.Contains("Assembly-CSharp"))
-            { print($"Skip C#: {path}");                 return; }
-        if(path.EndsWith(self))
-            { print($"Skip self: {self}");                 return; }
-        if(path.ToLower().Contains("test"))
-            { print($"Skip likely unit tests: {path}");    return; }
-        if(path.ToLower().Contains("unity."))
-            { print($"Skip likely Engine module: {path}"); return; }
-        if(path.ToLower().Contains("unityeditor."))
-                { print($"Skip likely Editor module: {path}"); return; }
-        if(path.EndsWith("Assembly-CSharp-Editor.dll"))
-            { print($"Skip editor scripts: {path}");       return; }
         ModuleDefinition module;
         try{
             module  = ModuleDefinition.ReadModule
                           (path,
                            new ReaderParameters { InMemory = true });
         }catch(System.BadImageFormatException ex){
-            Debug.LogWarning($"Bad image: {path}\n{ex}");
+            Debug.LogWarning ($"Bad image: {path}\n{ex}");
             return;
         }
         int tc  = module.Types.Count;
         int ptc = 0;
         foreach (var type in module.Types){
-            if(Config.Exclude(type.Name)){
+            //Debug.Log($"process type -- {type}");
+            if(PrologConfig.Exclude(type.Name)){
                 print($"Skip excluded type: {type.Name}");
                 continue;
             }
             if (type.IsPublic){
+                print($"Process type: {type.Name}");
                 foreach(MethodDefinition method in type.Methods){
                     // Note: interface and abstract methods do not have a body
                     if( method.IsConstructor
@@ -77,7 +60,7 @@ public static class Aspect{
             module.Write(path);
             print( $"@{path}... injected {ptc}/{tc} public types");
         }catch(AssemblyResolutionException ex){
-            Debug.LogWarning($"Cannot inject module {module}");
+            Debug.LogWarning($"Cannot inject module {module} ({ex})");
         }
     }
 
