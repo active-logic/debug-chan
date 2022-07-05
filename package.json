@@ -1,5 +1,5 @@
 {
-  "name": "com.activ.debugchan",
+  "name": "com.activ.debug-chan",
   "version": "0.3.0",
   "displayName": "Debug-Chan",
   "description": "Loggers, instrumentation, interactive console",
@@ -17,7 +17,7 @@
     "Unity"
   ],
   "author": {
-    "name": "Activ", "T.E.A. de Souza"
+    "name": "Activ",
     "email": "active.behaviours@gmail.com",
     "url": "https://github.com/active-logic"
   },
