@@ -13,11 +13,10 @@ public static class LoggingManager{
     static void OnPlayState(PlayModeStateChange state){
         switch(state){
             case PlayModeStateChange.EnteredPlayMode:
-                Debug.Log("Set DebugChan logger");
                 DebugChan.logger = new Logger<string, object>();
+                DebugChan.logToConsole = Activ.Prolog.Config.logToConsole;
                 break;
             case PlayModeStateChange.ExitingPlayMode:
-                Debug.Log("Clear DebugChan logger");
                 DebugChan.logger = null;
                 break;
         }

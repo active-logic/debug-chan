@@ -19,11 +19,9 @@ public static class Logger{
             case PlayModeStateChange.EnteredEditMode: break;
             case PlayModeStateChange.ExitingEditMode: break;
             case PlayModeStateChange.EnteredPlayMode:
-                UnityEngine.Debug.Log("Noticed play start");
                 isPlaying = true;
                 break;
             case PlayModeStateChange.ExitingPlayMode:
-                UnityEngine.Debug.Log("Noticed play ending");
                 isPlaying = false;
                 break;
         }

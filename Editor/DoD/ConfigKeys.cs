@@ -6,6 +6,7 @@ public static class ConfigKeys{
                         Step           = "Prolog.Step",
                         RTypeIndex     = "Prolog.RType",
                         EnableLogging  = "Prolog.enable",
+                        LogToConsole   = "Prolog.LogToConsole",
                         FileFlag       = "--file",
                         LogPath        = "Assets/log.txt",
                         Name           = "prolog.config",

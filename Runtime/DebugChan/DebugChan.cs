@@ -6,10 +6,14 @@ using Activ.LogChan;
 [InitializeOnLoad]
 public static class DebugChan{
 
+    public static bool logToConsole;
+
     public static Logger<string, object> logger;
 
     public static void Print(string arg, object source){
         logger?.Log(arg, RemapSource(source));
+        if(logToConsole)
+            Debug.Log(arg, source as UnityEngine.Object);
     }
 
     static object RemapSource(object arg){

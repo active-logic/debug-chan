@@ -34,6 +34,9 @@ public class Config : AssetPostprocessor{
     public static bool allFrames
     { set => SetBool(AllFrames, value); get => GetBool(AllFrames); }
 
+    public static bool logToConsole
+    { set => SetBool(LogToConsole, value); get => GetBool(LogToConsole); }
+
     public static bool useSelection
     { set => SetBool(UseSelection, value); get => GetBool(UseSelection); }
 

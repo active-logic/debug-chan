@@ -125,9 +125,12 @@ public class LogWindow : EditorWindow{
     void DrawToggles(){
         BeginHorizontal();
         Config.useSelection = ToggleLeft("Use Selection", Config.useSelection,
-                                         GL.MaxWidth(100f));
+                                GL.MaxWidth(100f));
         Config.allFrames    = ToggleLeft("History",  Config.allFrames,
-                                         GL.MaxWidth(60));
+                                GL.MaxWidth(60));
+        DebugChan.logToConsole = Config.logToConsole
+            = ToggleLeft("Log to console",  Config.logToConsole,
+                                GL.MaxWidth(120));
         //
         GL.FlexibleSpace();
         //
