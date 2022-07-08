@@ -15,3 +15,5 @@ Fork of *active-logic/prolog*; mainly because I need to share chanelled logging 
 Right now: too many similarities between Prolog, Debug-Chan and the better established Active Logic frame logger; trying to unify front ends and put the loggers under the same banner.
 
 More info will be provided later.
+
+*Unrelated note* - Gabranth is one of the coolest characters in FFXII, just keep that in mind.
