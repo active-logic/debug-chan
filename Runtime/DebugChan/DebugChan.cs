@@ -1,9 +1,6 @@
-using UnityEditor;
 using UnityEngine;
-using Activ.Loggr;
-using Activ.LogChan;
+using Activ.Loggr; using Activ.LogChan;
 
-[InitializeOnLoad]
 public static class DebugChan{
 
     public static bool logToConsole;
