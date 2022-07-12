@@ -27,7 +27,12 @@ public class Logger<T, S>{
         }
     }
 
-    public Log<T> this[S source] => logs[source];
+    public Log<T> this[S source]{ get{
+        if(logs.TryGetValue(source, out Log<T> value))
+            return value;
+        else
+            return null;
+    }}
 
     void UpdateMessageCount(int messagesAdded, int? maxMessages){
         messageCount += messagesAdded;
