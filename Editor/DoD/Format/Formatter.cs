@@ -1,8 +1,9 @@
 using System.Text;
 using UnityEngine;
+using Config = Activ.Loggr.Config;
 
 namespace Activ.Prolog{
-    public static class Formatter{
+public static class Formatter{
 
     public static string State(History history)
     => history.empty ? "History is empty"

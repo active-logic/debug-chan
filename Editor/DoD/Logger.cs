@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 //using static UnityEngine.Application;
 using Activ.Prolog.IL;
+using Activ.Loggr;  // for config keys
 
 namespace Activ.Prolog{
 [InitializeOnLoad]
@@ -49,7 +50,8 @@ public static class Logger{
         if(frame + msg) return;
         history += frame;
         LogWindowModel.instance.Log(frame);
-        LogWindow.instance?.Repaint();
+        // TODO model-to-view dep
+        Activ.Loggr.UI.LogWindow.instance?.Repaint();
         frame = new Frame(msg);
     }
 

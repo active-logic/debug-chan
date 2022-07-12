@@ -14,7 +14,11 @@ public static class LoggingManager{
         switch(state){
             case PlayModeStateChange.EnteredPlayMode:
                 DebugChan.logger = new Logger<string, object>();
-                DebugChan.logToConsole = Activ.Prolog.Config.logToConsole;
+                DebugChan.logToConsole = Config.logToConsole;
+                // TODO - transitional ref
+                // 
+                DebugChan.maxMessages = Config.maxMessages == 0 ? (int?)null : Config.maxMessages;
+                Activ.Loggr.UI.LogWindow.cumulatedMessageCount = 0;
                 break;
             case PlayModeStateChange.ExitingPlayMode:
                 DebugChan.logger = null;

@@ -3,12 +3,20 @@ using UnityEditor;
 using System.Linq;
 using static UnityEditor.EditorGUILayout;
 using static Activ.Prolog.LogWindowModel;
-using static Activ.Prolog.Config;
+//using static Activ.Prolog.PCfg;
 using Ed = UnityEditor.EditorApplication;
 using GL = UnityEngine.GUILayout;
 using EGL = UnityEditor.EditorGUILayout;
+//
+using PrologLogger = Activ.Prolog.Logger;
+using PrologConfigManager = Activ.Prolog.PrologConfigManager;
+using PrologFrame = Activ.Prolog.Frame;
+using PrologMessage = Activ.Prolog.Message;
+using PrologWindowModel = Activ.Prolog.LogWindowModel;
+using PrologHistoryGUI = Activ.Prolog.HistoryGUI;
+using PCfg = Activ.Prolog.PrologConfig;
 
-namespace Activ.Prolog{
+namespace Activ.Loggr.UI{
 public class LogWindow : EditorWindow{
 
     const int FontSize = 13;
@@ -17,34 +25,37 @@ public class LogWindow : EditorWindow{
     //
     static Font normalButtonFont;
     static Font     _font;
-    LogWindowModel model = LogWindowModel.instance;
-    Frame          selectedFrame;   // Last selected frame object
-    Vector2        scroll;
-    string         currentLog;
-    int            frame = -1;      // Last frame while playing (store this?)
+    PrologWindowModel model = PrologWindowModel.instance;
+    PrologFrame   selectedFrame;   // Last selected frame object
+    Vector2 scroll;
+    string  currentLog;
+    int     frame = -1;      // Last frame while playing (store this?)
+    // approx msg count (helps tracking memory overheads)
+    public static int cumulatedMessageCount;
 
     LogWindow(){
         Ed.pauseStateChanged +=
             (PauseState s) => { if(s == PauseState.Paused) Repaint(); };
-        Activ.Loggr.Logger<string, object>.messageReceived += OnMessage;
+        Activ.Loggr.Logger<string, object>.messageReceived += OnGenericMessage;
     }
 
     // From DebugChan
-    public void OnMessage(string message, object sender){
+    public void OnGenericMessage(string message, object sender, int messageCount){
+        cumulatedMessageCount = messageCount;
         if(isPlaying && instance){
             instance.DoUpdate(null);
         }
     }
 
     // From Prolog
-    public static void OnMessage(object sender, Message message){
+    public static void OnMessage(object sender, PrologMessage message){
         if(isPlaying && instance){
             instance.model.current = Selection.activeGameObject;
             instance.DoUpdate(message);
         }
     }
 
-    void DoUpdate(Message msg)
+    void DoUpdate(PrologMessage msg)
     { if(frame != Time.frameCount){ frame = Time.frameCount; Repaint(); }}
 
     void OnFocus(){
@@ -54,7 +65,7 @@ public class LogWindow : EditorWindow{
 
     void OnGUI(){
         if(PrologConfigManager.current == null){
-            if(GL.Button("Create Prolog config")){
+            if(GL.Button("Create Debug-Chan config")){
                 PrologConfigManager.Create();
             }
             return;
@@ -70,7 +81,7 @@ public class LogWindow : EditorWindow{
         DrawScrubber();
         if(Config.enableInjection) DrawDebuggerTextView();
         DrawLoggerTextView();
-        DrawToggles();
+        DrawFooter();
         //DrawTrailsConfig();
     }
 
@@ -80,7 +91,7 @@ public class LogWindow : EditorWindow{
             DrawTextView("Not running");
             return;
         }
-        if(!useSelection || model.selection == null){
+        if(!Config.useSelection || model.selection == null){
             DrawTextView("No selection");
             return;
         }
@@ -122,7 +133,7 @@ public class LogWindow : EditorWindow{
         style.focused.textColor = Color.white;
     }
 
-    void DrawToggles(){
+    void DrawFooter(){
         BeginHorizontal();
         Config.useSelection = ToggleLeft("Use Selection", Config.useSelection,
                                 GL.MaxWidth(100f));
@@ -132,7 +143,8 @@ public class LogWindow : EditorWindow{
             = ToggleLeft("Log to console",  Config.logToConsole,
                                 GL.MaxWidth(120));
         //
-        GL.FlexibleSpace();
+        EndHorizontal();
+        BeginHorizontal();
         //
         GL.Label("Trails - offset: ", GL.MaxWidth(88f));
         Config.trailOffset = FloatField(Config.trailOffset,
@@ -144,8 +156,19 @@ public class LogWindow : EditorWindow{
         // TODO for Prolog update
         //if(model.selection){
         //    GL.Label("→", GL.MaxWidth(25f));
-        //    Config.rtypeIndex = Popup(Config.rtypeIndex, rtypeOptions);
+        //    PCfg.rtypeIndex = Popup(PCfg.rtypeIndex, rtypeOptions);
         //}
+        //EndHorizontal();
+        //BeginHorizontal();
+        GL.FlexibleSpace();
+        if(isPlaying){
+            EGL.LabelField($"#{cumulatedMessageCount:0,000,000}", GL.MaxWidth(92f));
+        }else{
+            EditorGUIUtility.labelWidth = 60;
+            Config.maxMessages = EGL.IntField("Max msgs", Config.maxMessages);
+            EditorGUIUtility.labelWidth = 0;
+            //if(ScrubberButton($"Clear")) Clear();
+        }
         EndHorizontal();
         if(!Config.useSelection) model.current = null;
     }
@@ -165,9 +188,13 @@ public class LogWindow : EditorWindow{
         if(ScrubberButton(">")) SelectNext();
         style.font = normalButtonFont;
         GL.FlexibleSpace();
-        if(!isPlaying && ScrubberButton($"Clear")) Clear();
+        if(isPlaying){
+            //EGL.LabelField($"N#{cumulatedMessageCount:0,000,000}", GL.MaxWidth(92f));
+        }else{
+            if(ScrubberButton($"Clear")) Clear();
+        }
         // TODO reenable
-        //Config.step = ToggleLeft("Step", Config.step, GL.MaxWidth(48f));
+        //PCfg.step = ToggleLeft("Step", PCfg.step, GL.MaxWidth(48f));
         EndHorizontal();
     }
 
@@ -176,9 +203,9 @@ public class LogWindow : EditorWindow{
 
     // TODO re-enable but move elsewhere
     //void DrawPauseModeConfig(){
-    //    Config.enableInjection = ToggleLeft(
+    //    PCfg.enableInjection = ToggleLeft(
     //        $"Instrument ({Logger.injectionTimeMs}ms)",
-    //        Config.enableInjection, GL.ExpandWidth(true));
+    //        PCfg.enableInjection, GL.ExpandWidth(true));
     //}
 
     void ToggleAdvanced(){}
@@ -186,15 +213,15 @@ public class LogWindow : EditorWindow{
     void DrawConfigManager(){
         var selected = EGL.ObjectField(
             PrologConfigManager.current,
-            typeof(PrologConfig),
+            typeof(PCfg),
             allowSceneObjects: false);
-        PrologConfigManager.current = selected as PrologConfig;
+        PrologConfigManager.current = (PCfg)selected;
     }
 
     // Ref https://tinyurl.com/yyo8c35g which also demonstrates starting a 2D
     // GUI at handles location
     void OnSceneGUI(SceneView sceneView){
-        var sel = HistoryGUI.Draw(model.filtered, selectedFrame);
+        var sel = PrologHistoryGUI.Draw(model.filtered, selectedFrame);
         if(Ed.isPaused || !isPlaying){
             selectedFrame = sel ?? selectedFrame;
             Repaint();
@@ -207,7 +234,7 @@ public class LogWindow : EditorWindow{
     { if(Ed.isPaused || !isPlaying) Repaint(); }
 
     void Clear(){
-        Logger.Clear();
+        PrologLogger.Clear();
         model.Clear();
         selectedFrame = null;
         SceneView.RepaintAll();
@@ -226,10 +253,10 @@ public class LogWindow : EditorWindow{
         SceneView.RepaintAll();
     }
 
-    [MenuItem("Window/Activ/Prolog")]
+    [MenuItem("Window/Activ/Debug-Chan")]
     static void Init(){
         instance = (LogWindow)EditorWindow
-                   .GetWindow<LogWindow>(title: "Prolog");
+                   .GetWindow<LogWindow>(title: "Debug-Chan");
         instance.Show();
     }
 

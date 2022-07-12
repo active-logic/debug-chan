@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using static UnityEngine.Debug;
 using static UnityEngine.Vector3;
+using Config = Activ.Loggr.Config;
 
 namespace Activ.Prolog{
 public static class HistoryGUI{

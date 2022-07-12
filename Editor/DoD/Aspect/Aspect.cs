@@ -6,6 +6,7 @@ using UnityEngine;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using static Activ.Prolog.IL.Injector;
+using Config = Activ.Loggr.Config;
 
 namespace Activ.Prolog.IL{
 public static class Aspect{

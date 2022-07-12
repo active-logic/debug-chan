@@ -1,6 +1,7 @@
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+using Config = Activ.Loggr.Config;
 
 namespace Activ.Prolog{
 public class History{

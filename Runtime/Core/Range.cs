@@ -6,17 +6,17 @@ public class Range<T> : Formatting{
 
     public readonly Stamp start;
     public Stamp end {get; private set;}
-    public readonly List<T> messages = new List<T>(1);
+    public readonly T[] messages;
 
-    public Range(Frame<T> frame){
-        start    = frame.time;
-        end      = frame.time;
-        messages = frame.messages;
+    public Range(Stamp time, T[] messages){
+        start         = time;
+        end           = time;
+        this.messages = messages;
     }
 
     public bool Include(Frame<T> arg){
         if(arg.time != end + 1) return false;
-        var count = messages.Count;
+        var count = messages.Length;
         if(arg.messages.Count != count) return false;
         for(int i = 0; i < count; i++){
             if(!arg.messages[i].Equals(messages[i])) return false;

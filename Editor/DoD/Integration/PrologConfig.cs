@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace Activ.Prolog{
 [CreateAssetMenu(
-    fileName = "prolog", menuName = "Prolog/Prolog Config",
+    fileName = "Debug-Chan", menuName = "Debug-Chan/Config",
     order    = 10
 )] public partial class PrologConfig : ScriptableObject{
 
-    const string Path = "Assets/prolog.asset";
+    const string Path = "Assets/Activ/Config/Debug-Chan.asset";
     public static PrologConfig ι;
     public List<Assembly> assemblies;
     public List<TypeExclusion> typeExclusions;

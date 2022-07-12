@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Config = Activ.Loggr.Config;
 
 namespace Activ.Prolog{
 public class Frame{

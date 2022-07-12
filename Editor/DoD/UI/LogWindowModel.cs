@@ -1,4 +1,5 @@
 using UnityEngine;
+using Activ.Loggr;
 
 namespace Activ.Prolog{
 public class LogWindowModel{
