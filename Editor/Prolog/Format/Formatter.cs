@@ -24,7 +24,6 @@ public static class Formatter{
     }
 
     public static string Latest(History history, float startTime){
-        // TODO arbitrary conversion
         var firstId = history.RangeId(startTime) - 1;
         // NOTE: still an error to have a negative id... probably
         if(firstId < 0) firstId = 0;
