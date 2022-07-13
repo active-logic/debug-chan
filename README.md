@@ -3,17 +3,25 @@ Git URL
 https://github.com/eelstork/Debug-Chan.git
 ```
 
-# Debug-Chan [WIP]
+NOTE: Fork of *active-logic/prolog*; mainly because I need to share chanelled logging while roadwork is happening.
 
-Fork of *active-logic/prolog*; mainly because I need to share chanelled logging while roadwork is happening.
+# Debug-Chan
 
-## What's up with Prolog and Debug Chan
+A handy logging tool for Unity game development:
 
-- *Prolog* is an aggressive instrumentation/debugger used to trace Unity games (based on mono.cecil). Prolog was created as an offshoot of the active-logic project (to help debug behavior trees); some interest recently and efforts to make this more usable.
-- *Debug-Chan* is a channelled frame logger; makes it easy to view traces on a per game object basis, either for the current frame (play time) or history (while paused)
+- Channeled logging on a per game object basis
+- Automated call tracing (optional)
 
-Right now: too many similarities between Prolog, Debug-Chan and the better established Active Logic frame logger; trying to unify front ends and put the loggers under the same banner.
+Tired of pesky `Debug.Log`? Would prefer beautiful logs that let you see what the @#%^@^$ your game objects are doing without getting in the way?
 
-More info will be provided later.
+Debug-Chan is for you.
+
+## Get started with chaneled logging
+
+[pending]
+
+## Get started with automated call tracing
+
+[pending]
 
 *Unrelated note* - Gabranth is one of the coolest characters in FFXII, just keep that in mind.
