@@ -12,12 +12,15 @@ namespace Activ.Prolog{
 )] public partial class PrologConfig : ScriptableObject{
 
     const string Path = "Assets/Activ/Config/Debug-Chan.asset";
+    static readonly List<PrologConfig.Assembly> NoAssemblies
+                                 = new List<PrologConfig.Assembly>();
+    //
     public static PrologConfig ι;
     public List<Assembly> assemblies;
     public List<TypeExclusion> typeExclusions;
 
     public static IEnumerable<File> enabledAssemblies
-    => from Assembly x in instance.assemblies
+    => from Assembly x in (instance?.assemblies ?? NoAssemblies)
        where x.inject select x.file;
 
     public static IEnumerable<File> dlls
