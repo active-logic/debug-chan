@@ -26,7 +26,7 @@ public partial class LogWindow : EditorWindow{
     LogWindow(){
         Ed.pauseStateChanged +=
             (PauseState s) => { if(s == PauseState.Paused) Repaint(); };
-        Activ.Loggr.Logger<string, object>.messageReceived += OnGenericMessage;
+        Activ.Loggr.Logger<string, object>.onMessage += OnGenericMessage;
     }
 
     void OnFocus(){
@@ -95,10 +95,7 @@ public partial class LogWindow : EditorWindow{
         scroll = BeginScrollView(scroll);
         GUI.backgroundColor = Color.black;
         ConfigTextAreaStyle();
-        // TODO this is injecting prolog data into debug chan out
-        // when browsing
-        GL.TextArea(browsing ? model.selectedFrame.Format() : text,
-                           GL.ExpandHeight(true));
+        GL.TextArea(text, GL.ExpandHeight(true));
         EndScrollView();
         GUI.backgroundColor = Color.white;
     }
@@ -116,7 +113,10 @@ public partial class LogWindow : EditorWindow{
 
     void DrawScrubber(){
         BeginHorizontal();
-        int frameNo = browsing ? model.selectedFrame.index : Time.frameCount;
+        int frameNo = Time.frameCount;
+        if(browsing){
+            frameNo = model.currentFrame ?? frameNo;
+        }
         var style = GUI.skin.button;
         normalButtonFont = style.font;
         style.font = monofont;
@@ -141,12 +141,12 @@ public partial class LogWindow : EditorWindow{
     // Ref https://tinyurl.com/yyo8c35g which also demonstrates starting a 2D
     // GUI at handles location
     void OnSceneGUI(SceneView sceneView){
-        var sel = PrologHistoryGUI.Draw(model.filtered, model.selectedFrame);
+        var sel = PrologHistoryGUI.Draw(model.filtered, model.pgRange);
         if(Ed.isPaused || !isPlaying){
-            model.selectedFrame = sel ?? model.selectedFrame;
+            model.pgRange = sel ?? model.pgRange;
             Repaint();
         }else{
-            model.selectedFrame = null;
+            model.pgRange = null;
         }
     }
 
@@ -161,13 +161,12 @@ public partial class LogWindow : EditorWindow{
     }
 
     void SelectPrev(){
-        model.selectedFrame = model.Prev(model.selectedFrame);
+        model.Prev();
         SceneView.RepaintAll();
     }
 
     void SelectNext(){
-        if(model.selectedFrame == null) return;
-        model.selectedFrame = model.Next(model.selectedFrame);
+        model.Next();
         SceneView.RepaintAll();
     }
 
@@ -188,7 +187,7 @@ public partial class LogWindow : EditorWindow{
     }}
 
     bool browsing
-    => (Ed.isPaused || !isPlaying) && model.selectedFrame != null;
+    => (Ed.isPaused || !isPlaying) && model.pgRange != null;
 
     static bool isPlaying => Application.isPlaying;
 

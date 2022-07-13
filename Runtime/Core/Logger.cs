@@ -2,12 +2,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Activ.Loggr{
-public class Logger<T, S>{
+public class Logger<T, S> where S : class{
 
-    public static event MessageEventHandler messageReceived;
+    public static event MessageEventHandler onMessage;
 
     Dictionary<S, Log<T>> logs = new Dictionary<S, Log<T>>();
     public int messageCount{ get; private set; }
+
+    public Range<T> At(int φ, object src){
+        S σ = (src as S);
+        if(σ == null) return null;  // TODO breaks browsing all
+        return this[σ].At(φ);
+    }
+
+    public int? FirstStopAfter(int? frameIndex, object src){
+        S σ = (src as S);
+        if(σ == null) return null;  // TODO breaks browsing all
+        return this[σ].FirstStopAfter(frameIndex);
+    }
+
+    public int? LastStopBefore(int? frameIndex, object src){
+        S σ = (src as S);
+        if(σ == null) return null;  // TODO breaks browsing all
+        return this[σ].LastStopBefore(frameIndex);
+    }
 
     public void Log(T message, S source, int? maxMessages){
         Log<T> log;
@@ -15,7 +33,7 @@ public class Logger<T, S>{
             log = logs[source] = new Log<T>();
         }
         log.LogMessage(message, out int overhead);
-        messageReceived?.Invoke(message, source, messageCount);
+        onMessage?.Invoke(message, source, messageCount);
         UpdateMessageCount(overhead, maxMessages);
     }
 

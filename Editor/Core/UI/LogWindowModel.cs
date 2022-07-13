@@ -1,5 +1,6 @@
 using UnityEngine;
 using Activ.Loggr;
+using Ints = Activ.Loggr.IntExt;
 using PrologHistory = Activ.Prolog.History;
 using PrologFrame = Activ.Prolog.Frame;
 using PrologFilter = Activ.Prolog.Filter;
@@ -10,9 +11,11 @@ namespace Activ.Loggr.UI{
 public class LogWindowModel{
 
     public GameObject current;
+    public int? currentFrame;
     public PrologHistory filtered{ get; private set; }
     PrologFilter filter;
-    public PrologFrame selectedFrame;   // Last selected frame object
+    public PrologFrame   pgRange;  // selected prolog range
+    public Range<string> dcRange;  // selected debug-chan range
 
     public LogWindowModel(){
         PrologLogger.onFrame += OnPrologFrame;
@@ -21,15 +24,35 @@ public class LogWindowModel{
     public void Clear(){
         filtered = null;
         current = null;
-        selectedFrame = null;
+        pgRange = null;
+        dcRange = null;
     }
 
-    public PrologFrame Next(PrologFrame current){
-        return filtered.Next(current);
+    public void Next(){
+        int? index = Ints.Min(
+            filtered.FirstStopAfter(currentFrame, current),
+            DebugChan.logger.FirstStopAfter(currentFrame, current)
+        );
+        SetCurrentFrame(index);
     }
 
-    public PrologFrame Prev(PrologFrame current){
-        return filtered.Prev(current ?? filtered.last);
+    public void Prev(){
+        int? index = Ints.Max(
+            filtered.LastStopBefore(currentFrame, current),
+            DebugChan.logger.LastStopBefore(currentFrame, current)
+        );
+        SetCurrentFrame(index);
+    }
+
+    public void SetCurrentFrame(int? frameIndex){
+        if(frameIndex.HasValue){
+            var i = frameIndex.Value;
+            pgRange = filtered.At(i);
+            dcRange = DebugChan.logger.At(i, current);
+        }else{
+            pgRange = null;
+            dcRange = null;
+        }
     }
 
     public string Output(bool useHistory, string rtype){

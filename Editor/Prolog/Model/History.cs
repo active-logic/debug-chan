@@ -22,6 +22,33 @@ public class History{
         foreach(var frame in Logger.frames){ var self = this + frame; }
     }
 
+    public Frame At(int φ){
+        foreach(var range in frames){
+            if(range.index >= φ) return range;
+        }
+        return null;
+    }
+
+    // TODO support for selection here is... quirky?
+    public int? FirstStopAfter(int? frameIndex, object src){
+        if(!frameIndex.HasValue) return null;
+        var i = frameIndex.Value;
+        foreach(var range in frames){
+            if(range.index > i) return range.index;
+        }
+        return null;
+    }
+
+    // TODO support for selection here is... quirky?
+    public int? LastStopBefore(int? frameIndex, object src){
+        if(!frameIndex.HasValue) return null;
+        var i = frameIndex.Value;
+        for(int k = frames.Count; k >= 0; k --){
+            if(frames[k].index < i) return frames[k].index;
+        }
+        return null;
+    }
+
     public bool empty => !this == 0;
 
     public Frame last{

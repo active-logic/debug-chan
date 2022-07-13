@@ -14,8 +14,15 @@ public partial class LogWindow{  // Debug-Chan
         }
     }
 
-    void DrawLoggerTextView()
-        => DrawTextView(EvalTextContent(), ref dc_scroll);
+    void DrawLoggerTextView(){
+        string content;
+        if(browsing){
+            content = model.dcRange.Format();
+        }else{
+            content = EvalTextContent();
+        }
+        DrawTextView(content, ref dc_scroll);
+    }
 
     string EvalTextContent(){
         var logger = (Activ.Loggr.Logger<string, object>) DebugChan.logger;
