@@ -1,5 +1,6 @@
 using UnityEngine;  // for UnityEngine.Time
 using System.Collections.Generic;
+using System.Text;
 using Ex = System.Exception;
 
 namespace Activ.Loggr{
@@ -15,6 +16,12 @@ public class Log<T>{
         }
         return null;
     }
+
+    // -------------------------------------------------------------
+
+    public int count => ranges.Count;
+
+    // -------------------------------------------------------------
 
     public int? FirstStopAfter(int? frameIndex){
         if(!frameIndex.HasValue) return null;
@@ -51,7 +58,18 @@ public class Log<T>{
         current.Add(message);
     }
 
-    public string Format() => ranges.Format();
+    public string Format(float since, float time){
+        int start = RangeId(since) - 1;
+        if(start < 0) start = 0;
+        var @out = new StringBuilder();
+        var t = time;
+        for(var i = start; i < count; i++){
+            @out.Append(ranges[i].Format(t) + '\n');
+        }
+        return @out.ToString();
+    }
+
+    // -------------------------------------------------------------
 
     void FinalizeCurrentFrame(out int overhead){
         if(current == null){
@@ -71,6 +89,14 @@ public class Log<T>{
         }else{
             overhead = 0;
         }
+    }
+
+    // Return the index of the first range containing time 't'
+    int RangeId(float time){
+        for(int i = ranges.Count - 1; i >= 0; i--){
+            if(ranges[i].Contains(time)) return i;
+        }
+        return -1;
     }
 
     Range<T> lastRange

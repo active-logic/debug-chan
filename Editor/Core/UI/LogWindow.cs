@@ -17,6 +17,7 @@ public partial class LogWindow : EditorWindow{
     //
     static Font normalButtonFont;
     static Font _font;
+    static float time;
 
     string currentLog;
     int frame = -1;  // Last frame while playing (store this?)
@@ -46,27 +47,35 @@ public partial class LogWindow : EditorWindow{
         //
         model.current = Selection.activeGameObject;
         instance = this;
+        if(isPlaying) time = Time.time;
         DrawScrubber();
-        DrawLoggerTextView();
-        if(Config.enableInjection) DrawPrologView();
+        DrawLoggerTextView(time);
+        if(Config.enableInjection) DrawPrologView(time);
         DrawFooter();
     }
 
     void DrawFooter(){
         BeginHorizontal();
+        // ◎
         Config.useSelection = ToggleLeft("Use Selection", Config.useSelection,
                                 GL.MaxWidth(100f));
+        // ℋ ℌ
         Config.allFrames    = ToggleLeft("History",  Config.allFrames,
-                                GL.MaxWidth(60));
+                                GL.MaxWidth(64));
+        // ☰▤
         DebugChan.logToConsole = Config.logToConsole
-            = ToggleLeft("Log to console",  Config.logToConsole,
-                                GL.MaxWidth(100));
+            = ToggleLeft("Console", Config.logToConsole,
+                                    GL.MaxWidth(100));
         //
-        if(!isPlaying) DrawEnableInjection();
+        if(!isPlaying){
+            GL.FlexibleSpace();
+            DrawEnableInjection();
+        }
 
         EndHorizontal();
         BeginHorizontal();
         //
+        // ◈
         GL.Label("Trails - offset: ", GL.MaxWidth(88f));
         Config.trailOffset = FloatField(Config.trailOffset,
                                         GL.MaxWidth(30f));
@@ -87,8 +96,8 @@ public partial class LogWindow : EditorWindow{
 
     void DrawEnableInjection(){
         Config.enableInjection = ToggleLeft(
-            $"Instrument ({PrologLogger.injectionTimeMs}ms)",
-            Config.enableInjection, GL.ExpandWidth(false));
+            $"☢ ({PrologLogger.injectionTimeMs}ms)",
+            Config.enableInjection, GL.Width(30));
     }
 
     void DrawTextView(string text, ref Vector2 scroll){
@@ -124,29 +133,36 @@ public partial class LogWindow : EditorWindow{
         // TODO for now still broken; also, use case unclear
         //if(ScrubberButton("<")) SelectPrev();
         if(isPlaying){
-            GL.Button($"#{frameNo:0000}", GL.MaxWidth(64f), GL.MinHeight(ScrubberButtonsHeight));
+            GL.Button($"#{frameNo:0000}",
+                      GL.MaxWidth(64f),
+                      GL.MinHeight(ScrubberButtonsHeight));
         }else{
-            GL.Button($"-----", GL.MaxWidth(64f), GL.MinHeight(ScrubberButtonsHeight));
+            GL.Button($"-----",
+                      GL.MaxWidth(64f),
+                      GL.MinHeight(ScrubberButtonsHeight));
         }
         //if(ScrubberButton(">")) SelectNext();
         if(!isPlaying && ScrubberButton($"Clear")) Clear();
         GL.FlexibleSpace();
         EGL.LabelField("last", GL.Width(24));
-        Config.historySpan = EGL.DelayedFloatField(Config.historySpan, GL.Width(32));
+        Config.historySpan
+            = EGL.DelayedFloatField(Config.historySpan, GL.Width(32));
         EGL.LabelField("s", GL.Width(16));
         style.font = normalButtonFont;
         EndHorizontal();
     }
 
     bool ScrubberButton(string arg)
-    => GL.Button(arg, GL.ExpandWidth(false), GL.MinHeight(ScrubberButtonsHeight));
+    => GL.Button(arg, GL.ExpandWidth(false),
+                      GL.MinHeight(ScrubberButtonsHeight));
 
     void ToggleAdvanced(){}
 
-    // Ref https://tinyurl.com/yyo8c35g which also demonstrates starting a 2D
-    // GUI at handles location
+    // Ref https://tinyurl.com/yyo8c35g which also demonstrates
+    // starting a 2D GUI at handles location
     void OnSceneGUI(SceneView sceneView){
-        var sel = PrologHistoryGUI.Draw(model.filtered, model.pgRange);
+        var sel = PrologHistoryGUI.Draw(model.filtered,
+                                        model.pgRange);
         if(Ed.isPaused || !isPlaying){
             model.pgRange = sel ?? model.pgRange;
             Repaint();
@@ -159,6 +175,7 @@ public partial class LogWindow : EditorWindow{
     { if(Ed.isPaused || !isPlaying) Repaint(); }
 
     void Clear(){
+        DebugChan.logger = null;
         PrologLogger.Clear();
         model.Clear();
         SceneView.RepaintAll();
@@ -184,11 +201,13 @@ public partial class LogWindow : EditorWindow{
     static Font monofont{ get{
         if(_font) return _font;
         var avail = new []{
-            "Menlo", "Consolas", "Inconsolata", "Bitstream Vera Sans Mono",
-            "Oxygen Mono", "Ubuntu Mono", "Cousine", "Courier", "Courier New",
-            "Lucida Console", "Monaco"
+            "Menlo", "Consolas", "Inconsolata",
+            "Bitstream Vera Sans Mono", "Oxygen Mono", "Ubuntu Mono",
+            "Cousine", "Courier", "Courier New", "Lucida Console",
+            "Monaco"
         }.Intersect(Font.GetOSInstalledFontNames()).First();
-        return _font = Font.CreateDynamicFontFromOSFont(avail, FontSize);
+        return _font = Font.CreateDynamicFontFromOSFont(avail,
+                                                        FontSize);
     }}
 
     bool browsing

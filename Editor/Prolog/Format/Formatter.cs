@@ -23,15 +23,14 @@ public static class Formatter{
         return x.ToString();
     }
 
-    public static string Latest(History history, float startTime){
+    public static string Latest(History history, float startTime, float time){
         var firstId = history.RangeId(startTime) - 1;
         // NOTE: still an error to have a negative id... probably
         if(firstId < 0) firstId = 0;
         //ebug.Log($"Format from {firstId}/{history.count} (φ0: {sinceFrame})");
         var x = new StringBuilder();
-        var t = Time.time;
         for(int i = firstId; i < history.count; i++){
-            var lapse = t - history[i].time;
+            var lapse = time - history[i].time;
             x.Append($"\n[ {FrameRange(history, i)} ] {lapse:0.00}s ago "
                            .PadRight(Config.LogLineLength, '-') + "\n\n");
             x.Append(history[i].Format(-1));

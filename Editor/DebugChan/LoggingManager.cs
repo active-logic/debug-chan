@@ -15,12 +15,14 @@ public static class LoggingManager{
             case PlayModeStateChange.EnteredPlayMode:
                 DebugChan.logger = new Logger<string, object>();
                 DebugChan.logToConsole = Config.logToConsole;
-                DebugChan.maxMessages = Config.maxMessages == 0 ? (int?)null : Config.maxMessages;
+                DebugChan.maxMessages = Config.maxMessages == 0
+                    ? (int?)null
+                    : Config.maxMessages;
                 Activ.Loggr.UI.LogWindow.cumulatedMessageCount = 0;
                 break;
-            case PlayModeStateChange.ExitingPlayMode:
-                DebugChan.logger = null;
-                break;
+            //case PlayModeStateChange.ExitingPlayMode:
+            //    DebugChan.logger = null;
+            //    break;
         }
     }
 

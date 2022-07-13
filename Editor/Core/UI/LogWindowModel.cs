@@ -60,9 +60,10 @@ public class LogWindowModel{
         return PrologFormatter.State(source);
     }
 
-    public string GetPrologOutput(string rtype, float since){
+
+    public string GetPrologOutput(string rtype, float since, float currentTime){
         filter = new PrologFilter(selection, rtype);
-        return PrologFormatter.Latest(source, since);
+        return PrologFormatter.Latest(source, since, currentTime);
     }
 
     public void OnPrologFrame(PrologFrame frame){

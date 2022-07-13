@@ -35,11 +35,23 @@ public class Stamp{
     public static bool operator > (Stamp x, Stamp y)
     => x.frame > y.frame;
 
+    public static bool operator > (Stamp x, float y)
+    => x.frame > y;
+
+    public static bool operator < (Stamp x, float y)
+    => x.frame < y;
+
+    public static bool operator > (float x, Stamp y)
+    => x > y.frame;
+
+    public static bool operator < (float x, Stamp y)
+    => x < y.frame;
+
     public static bool operator < (Stamp x, Stamp y)
     => x.frame < y.frame;
 
     public static bool operator == (Stamp x, Stamp y)
-    => x.frame == y.frame;
+        => (x?.frame ?? -1) == (y?.frame ?? -1);
 
     public static bool operator !=(Stamp x, Stamp y)
     => x.frame != y.frame;

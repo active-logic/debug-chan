@@ -75,8 +75,7 @@ public class History{
     public Frame Prev(Frame x)
     => frames[ System.Math.Max(frames.IndexOf(x) - 1, 0) ];
 
-    // given the specified frame, return the
-    // index of the first range containing frame φ
+    // Return the index of the first range containing time 't'
     public int RangeId(float t){
         for(int i = 0; i < frames.Count; i++){
             if(ContainsTimeValue(rangeId: i, t)) return i;

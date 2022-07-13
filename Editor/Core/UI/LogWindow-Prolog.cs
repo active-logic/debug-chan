@@ -18,9 +18,9 @@ public partial class LogWindow{  // Prolog
 
     Vector2 p_scroll;
 
-    void DrawPrologView(){
+    void DrawPrologView(float time){
         DrawPrologHeader();
-        DrawPrologTextView();
+        DrawPrologTextView(time);
     }
 
     void DrawPrologHeader(){
@@ -34,12 +34,12 @@ public partial class LogWindow{  // Prolog
         EndHorizontal();
     }
 
-    void DrawPrologTextView(){
+    void DrawPrologTextView(float time){
         string log;
         var rtype = rtypeOptions[Config.rtypeIndex];
         if(useHistory){
-            var startTime = Time.time - Config.historySpan;
-            log = model.GetPrologOutput(rtype, since: startTime);
+            var startTime = time - Config.historySpan;
+            log = model.GetPrologOutput(rtype, since: startTime, time);
         }else{
             log = model.GetPrologOutput(rtype);
         }
