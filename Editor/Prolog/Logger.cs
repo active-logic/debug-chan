@@ -43,10 +43,10 @@ public static class Logger{
     }
 
     public static void Log(object src, string message)
-    { if(isPlaying) Process(new Message(Time.frameCount, src, message)); }
+    { if(isPlaying) Process(new Message(Time.frameCount, Time.time, src, message)); }
 
     public static void LogStatic(string type, string message)
-    { if(isPlaying) Process(new Message(Time.frameCount, type, message)); }
+    { if(isPlaying) Process(new Message(Time.frameCount, Time.time, type, message)); }
 
     static void Process(Message msg){
         if(frame + msg) return;

@@ -55,10 +55,14 @@ public class LogWindowModel{
         }
     }
 
-    public string Output(bool useHistory, string rtype){
+    public string GetPrologOutput(string rtype){
         filter = new PrologFilter(selection, rtype);
-        return useHistory ? PrologFormatter.Latest(source)
-                          : PrologFormatter.State(source);
+        return PrologFormatter.State(source);
+    }
+
+    public string GetPrologOutput(string rtype, float since){
+        filter = new PrologFilter(selection, rtype);
+        return PrologFormatter.Latest(source, since);
     }
 
     public void OnPrologFrame(PrologFrame frame){

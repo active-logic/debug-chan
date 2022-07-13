@@ -3,20 +3,18 @@ Git URL
 https://github.com/eelstork/Debug-Chan.git
 ```
 
-NOTE: Fork of *active-logic/prolog*; mainly because I need to share chanelled logging while roadwork is happening.
+NOTE: Fork of *active-logic/prolog* while roadwork is happening.
 
 # Debug-Chan
 
-A handy logging tool for Unity game development:
+Handy logging/tracing tool for Unity game development:
 
-- Channeled logging on a per game object basis
-- Automated call tracing (optional)
+- Channeled logging (per game object traces)
+- Automated trace generation (experimental/optional)
 
-Tired of pesky `Debug.Log`? Would prefer beautiful logs that let you see what the @#%^@^$ your game objects are doing without getting in the way?
+Via UPM: `https://github.com/eelstork/Debug-Chan.git`
 
-Debug-Chan is for you.
-
-## Get started with chaneled logging
+## Get started with channeled logging
 
 [pending]
 

@@ -35,7 +35,15 @@ public partial class LogWindow{  // Prolog
     }
 
     void DrawPrologTextView(){
-        string log = model.Output(useHistory, rtypeOptions[Config.rtypeIndex]);
+        string log;
+        var rtype = rtypeOptions[Config.rtypeIndex];
+        if(useHistory){
+            var startTime = Time.time - Config.historySpan;
+            log = model.GetPrologOutput(rtype, since: startTime);
+        }else{
+            log = model.GetPrologOutput(rtype);
+        }
+
         if(currentLog != log && Config.step) Ed.isPaused = true;
         currentLog = log;
         DrawTextView(browsing ? model.pgRange.Format() : log, ref p_scroll);

@@ -14,6 +14,7 @@ public class Frame{
     public Frame(Message msg){
         messages.Add(msg);
         index = msg.frame;
+        //time = messages[0].time;
     }
 
     Frame(Frame source, Filter filter){
@@ -29,7 +30,10 @@ public class Frame{
     }
 
     public bool empty => messages.Count == 0;
+
     public int  count => messages.Count;
+
+    public float time => messages[0].time;
 
     public static Frame operator * (Frame self, Filter filter)
     => filter.isNeutral ? self : new Frame(self, filter);

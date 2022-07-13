@@ -4,12 +4,14 @@ namespace Activ.Prolog{
 public class Message{
 
     public int            frame;
+    public float          time;
     public GameObjectInfo owner;
     public object         source;
     public string         _sourceType,
                           message;
 
-    public Message(int frame, object source, string msg){
+    public Message(int frame, float time, object source, string msg){
+        this.time    = time;
         this.frame   = frame;
         this.source  = source;
         this.message = msg;
