@@ -38,7 +38,7 @@ public class LogWindowModel{
 
     public void Prev(){
         int? index = Ints.Max(
-            filtered.LastStopBefore(currentFrame, current),
+            filtered?.LastStopBefore(currentFrame, current),
             DebugChan.logger.LastStopBefore(currentFrame, current)
         );
         SetCurrentFrame(index);
@@ -62,6 +62,8 @@ public class LogWindowModel{
     }
 
     public void OnPrologFrame(PrologFrame frame){
+        if(frame == null) return;
+        //Debug.Log($"Got new frame {frame}");
         filtered += frame;
         Activ.Loggr.UI.LogWindow.instance?.Repaint();
     }

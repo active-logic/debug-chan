@@ -92,7 +92,7 @@ public partial class LogWindow : EditorWindow{
     }
 
     void DrawTextView(string text, ref Vector2 scroll){
-        scroll = BeginScrollView(scroll);
+        scroll = BeginScrollView(scroll, GL.Height(360));
         GUI.backgroundColor = Color.black;
         ConfigTextAreaStyle();
         GL.TextArea(text, GL.ExpandHeight(true));
@@ -117,19 +117,24 @@ public partial class LogWindow : EditorWindow{
         if(browsing){
             frameNo = model.currentFrame ?? frameNo;
         }
+        model.currentFrame = frameNo;
         var style = GUI.skin.button;
         normalButtonFont = style.font;
         style.font = monofont;
-        if(ScrubberButton("<")) SelectPrev();
+        // TODO for now still broken; also, use case unclear
+        //if(ScrubberButton("<")) SelectPrev();
         if(isPlaying){
             GL.Button($"#{frameNo:0000}", GL.MaxWidth(64f), GL.MinHeight(ScrubberButtonsHeight));
         }else{
             GL.Button($"-----", GL.MaxWidth(64f), GL.MinHeight(ScrubberButtonsHeight));
         }
-        if(ScrubberButton(">")) SelectNext();
-        style.font = normalButtonFont;
-        GL.FlexibleSpace();
+        //if(ScrubberButton(">")) SelectNext();
         if(!isPlaying && ScrubberButton($"Clear")) Clear();
+        GL.FlexibleSpace();
+        EGL.LabelField("last", GL.Width(24));
+        Config.historySpan = EGL.DelayedFloatField(Config.historySpan, GL.Width(32));
+        EGL.LabelField("s", GL.Width(16));
+        style.font = normalButtonFont;
         EndHorizontal();
     }
 

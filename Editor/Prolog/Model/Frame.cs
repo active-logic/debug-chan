@@ -17,6 +17,12 @@ public class Frame{
     }
 
     Frame(Frame source, Filter filter){
+        if(source == null){
+            Debug.LogError("source frame is null");
+        }
+        if(filter == null){
+            Debug.LogError("no filter");
+        }
         index = source.index;
         foreach(var k in source.messages)
             if(filter.Accept(k)) messages.Add(k);

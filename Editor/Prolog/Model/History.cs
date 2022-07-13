@@ -70,6 +70,7 @@ public class History{
     => i == !this - 1 ? Time.frameCount : frames[i + 1].index - 1;
 
     public static History operator + (History self, Frame frame){
+        if(frame == null) return self;
         if(self == null) return self;
         frame *= self.filter;
         if(frame % self.last) return self;

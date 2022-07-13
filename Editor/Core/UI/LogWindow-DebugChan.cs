@@ -16,7 +16,7 @@ public partial class LogWindow{  // Debug-Chan
 
     void DrawLoggerTextView(){
         string content;
-        if(browsing){
+        if(browsing && !useHistory){
             content = model.dcRange.Format();
         }else{
             content = EvalTextContent();
@@ -33,7 +33,10 @@ public partial class LogWindow{  // Debug-Chan
             return "Debug-Chan: no selection";
         }
         if(useHistory && Ed.isPaused){
-            var text = logger[model.selection]?.Format() ?? "No messages";
+            var text = logger[model.selection]?.Format() ?? "Debug-Chan: No messages";
+            // NOTE: history does not include latest frame.
+            var frame = logger.CurrentFrame(model.selection);
+            if(frame != null) text += frame.Format();
             return model.selection.name + "\n\n" + text;
         }else{
             var frame = logger.CurrentFrame(model.selection);

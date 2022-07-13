@@ -35,6 +35,9 @@ public class Config : AssetPostprocessor{
     public static float handleSize
     { set => SetFloat(HandleSize, value); get => GetFloat(HandleSize); }
 
+    public static float historySpan
+    { set => SetFloat(HistorySpan, value); get => GetFloat(HistorySpan, 10f); }
+
     public static bool logToConsole
     { set => SetBool(LogToConsole, value); get => GetBool(LogToConsole, false); }
 

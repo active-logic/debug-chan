@@ -13,6 +13,7 @@ public static class ConfigKeys{
                         Name           = "prolog.config",
                         Path           = "Assets/prolog.config",
                         TrailOffset    = "Activ.Loggr.TrailOffset",
-                        HandleSize     = "Activ.Loggr.HandleSize";
+                        HandleSize     = "Activ.Loggr.HandleSize",
+                        HistorySpan    = "Activ.Loggr.HistorySpan";
 
 }}
