@@ -10,16 +10,13 @@ using PrologConfigManager = Activ.Prolog.PrologConfigManager;
 using PrologFrame = Activ.Prolog.Frame;
 using PrologLogger = Activ.Prolog.Logger;
 using PrologMessage = Activ.Prolog.Message;
-using PrologWindowModel = Activ.Prolog.LogWindowModel;
-using static Activ.Prolog.LogWindowModel;
 
 namespace Activ.Loggr.UI{
 public partial class LogWindow{  // Prolog
 
-    Vector2 p_scroll;
+    public static readonly string[] rtypeOptions = {"any", "void", "status"};
 
-    PrologWindowModel model = PrologWindowModel.instance;
-    PrologFrame selectedFrame;   // Last selected frame object
+    Vector2 p_scroll;
 
     void DrawPrologView(){
         DrawPrologHeader();

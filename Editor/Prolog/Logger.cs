@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEditor;
-//using static UnityEngine.Application;
 using Activ.Prolog.IL;
 using Activ.Loggr;  // for config keys
 
@@ -10,9 +9,12 @@ namespace Activ.Prolog{
 [InitializeOnLoad]
 public static class Logger{
 
+    public static event FrameEventHandler onFrame;
+
     public static int injectionTimeMs;
     public static History history    = new History(ConfigKeys.LogPath);
     public static List<Frame> frames = new List<Frame>();
+
     static bool isPlaying = false;
 
     private static void OnPlayState(PlayModeStateChange state){
@@ -49,9 +51,7 @@ public static class Logger{
     static void Process(Message msg){
         if(frame + msg) return;
         history += frame;
-        LogWindowModel.instance.Log(frame);
-        // TODO model-to-view dep
-        Activ.Loggr.UI.LogWindow.instance?.Repaint();
+        onFrame?.Invoke(frame);
         frame = new Frame(msg);
     }
 
@@ -59,5 +59,9 @@ public static class Logger{
         get => frames.Count == 0 ? null : frames[frames.Count-1];
         set => frames.Add(value);
     }
+
+    // -------------------------------------------------------------
+
+    public delegate void FrameEventHandler(Frame frame);
 
 }}

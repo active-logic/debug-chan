@@ -1,29 +1,52 @@
 using UnityEngine;
 using Activ.Loggr;
+using PrologHistory = Activ.Prolog.History;
+using PrologFrame = Activ.Prolog.Frame;
+using PrologFilter = Activ.Prolog.Filter;
+using PrologFormatter = Activ.Prolog.Formatter;
+using PrologLogger = Activ.Prolog.Logger;
 
-namespace Activ.Prolog{
+namespace Activ.Loggr.UI{
 public class LogWindowModel{
 
-    public static readonly string[] rtypeOptions = {"any", "void", "status"};
-    public static LogWindowModel instance = new LogWindowModel();
     public GameObject current;
-    public History filtered{ get; private set; }
-    Filter filter;
+    public PrologHistory filtered{ get; private set; }
+    PrologFilter filter;
+    public PrologFrame selectedFrame;   // Last selected frame object
+
+    public LogWindowModel(){
+        PrologLogger.onFrame += OnPrologFrame;
+    }
+
+    public void Clear(){
+        filtered = null;
+        current = null;
+        selectedFrame = null;
+    }
+
+    public PrologFrame Next(PrologFrame current){
+        return filtered.Next(current);
+    }
+
+    public PrologFrame Prev(PrologFrame current){
+        return filtered.Prev(current ?? filtered.last);
+    }
+
+    public string Output(bool useHistory, string rtype){
+        filter = new PrologFilter(selection, rtype);
+        return useHistory ? PrologFormatter.Latest(source)
+                          : PrologFormatter.State(source);
+    }
+
+    public void OnPrologFrame(PrologFrame frame){
+        filtered += frame;
+        Activ.Loggr.UI.LogWindow.instance?.Repaint();
+    }
 
     public GameObject selection
     => Config.useSelection ? current : null;
 
-    public void Clear(){ filtered = null; current = null; }
-
-    public string Output(bool useHistory, string rtype){
-        filter = new Filter(selection, rtype);
-        return useHistory ? Formatter.Latest(source)
-                          : Formatter.State(source);
-    }
-
-    public void Log(Frame frame) => filtered += frame;
-
-    History source
-    => selection ? (filtered /= filter) : Logger.history;
+    PrologHistory source
+    => selection ? (filtered /= filter) : PrologLogger.history;
 
 }}
