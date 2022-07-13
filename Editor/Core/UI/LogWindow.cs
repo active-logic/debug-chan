@@ -49,8 +49,13 @@ public partial class LogWindow : EditorWindow{
         instance = this;
         if(isPlaying) time = Time.time;
         DrawScrubber();
-        DrawLoggerTextView(time);
-        if(Config.enableInjection) DrawPrologView(time);
+        // NOTE: didn't find a clean way to stabilize window
+        // heights when 2 scrolling text areas are involved;
+        // therefore if only 1, expand; otherwise do some calc.
+        // ('position' is the editor window rectangle)
+        int? height = Config.enableInjection ? (int?)position.height/2 - 48 : null;
+        DrawLoggerTextView(time, height);
+        if(Config.enableInjection) DrawPrologView(time, height);
         DrawFooter();
     }
 
@@ -100,8 +105,12 @@ public partial class LogWindow : EditorWindow{
             Config.enableInjection, GL.Width(30));
     }
 
-    void DrawTextView(string text, ref Vector2 scroll){
-        scroll = BeginScrollView(scroll, GL.Height(360));
+    void DrawTextView(string text, int? height, ref Vector2 scroll){
+        if(height.HasValue){
+            scroll = BeginScrollView(scroll, GL.Height(height.Value));
+        }else{
+            scroll = BeginScrollView(scroll);
+        }
         GUI.backgroundColor = Color.black;
         ConfigTextAreaStyle();
         GL.TextArea(text, GL.ExpandHeight(true));

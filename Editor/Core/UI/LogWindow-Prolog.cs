@@ -18,9 +18,9 @@ public partial class LogWindow{  // Prolog
 
     Vector2 p_scroll;
 
-    void DrawPrologView(float time){
+    void DrawPrologView(float time, int? height){
         DrawPrologHeader();
-        DrawPrologTextView(time);
+        DrawPrologTextView(time, height);
     }
 
     void DrawPrologHeader(){
@@ -34,7 +34,7 @@ public partial class LogWindow{  // Prolog
         EndHorizontal();
     }
 
-    void DrawPrologTextView(float time){
+    void DrawPrologTextView(float time, int? height){
         string log;
         var rtype = rtypeOptions[Config.rtypeIndex];
         if(useHistory){
@@ -43,10 +43,9 @@ public partial class LogWindow{  // Prolog
         }else{
             log = model.GetPrologOutput(rtype);
         }
-
         if(currentLog != log && Config.step) Ed.isPaused = true;
         currentLog = log;
-        DrawTextView(browsing ? model.pgRange.Format() : log, ref p_scroll);
+        DrawTextView(browsing ? model.pgRange.Format() : log, height, ref p_scroll);
     }
 
     void DrawConfigSelector(){

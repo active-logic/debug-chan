@@ -14,14 +14,14 @@ public partial class LogWindow{  // Debug-Chan
         }
     }
 
-    void DrawLoggerTextView(float time){
+    void DrawLoggerTextView(float time, int? height){
         string content;
         if(browsing && !useHistory){
             content = model.dcRange.Format();
         }else{
             content = EvalTextContent(time);
         }
-        DrawTextView(content, ref dc_scroll);
+        DrawTextView(content, height, ref dc_scroll);
     }
 
     string EvalTextContent(float time){
