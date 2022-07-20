@@ -14,6 +14,7 @@ public partial class LogWindow : EditorWindow{
     const float ScrubberButtonsHeight = 24f;
     public static LogWindow instance;
     LogWindowModel model = new LogWindowModel();
+    string breakpoint;
     //
     static Font normalButtonFont;
     static Font _font;
@@ -44,8 +45,9 @@ public partial class LogWindow : EditorWindow{
             }
             return;
         }
-        //
-        model.current = Selection.activeGameObject;
+        if(Selection.activeGameObject){
+            model.current = Selection.activeGameObject;
+        }
         instance = this;
         if(isPlaying) time = Time.time;
         DrawScrubber();
@@ -60,6 +62,8 @@ public partial class LogWindow : EditorWindow{
     }
 
     void DrawFooter(){
+        breakpoint = EGL.DelayedTextField("Breakpoint", breakpoint)?.Trim();
+        if(breakpoint?.Length == 0) breakpoint = null;
         BeginHorizontal();
         // ◎
         Config.useSelection = ToggleLeft("Use Selection", Config.useSelection,

@@ -9,6 +9,23 @@ public partial class LogWindow{  // Debug-Chan
     // From DebugChan
     public void OnGenericMessage(string message, object sender, int messageCount){
         cumulatedMessageCount = messageCount;
+        if(Config.useSelection && model.current == null){
+            if(sender is GameObject){
+                model.current = sender as GameObject;
+                Debug.Log($"Make current {model.current}");
+            }
+            if(sender is Component){
+                model.current = (sender as Component).gameObject;
+                Debug.Log($"Make current {model.current}");
+            }
+        }
+        if(breakpoint != null && message.ToLower().Contains(breakpoint.ToLower())){
+            Debug.Break();
+            Debug.Log($"Break on {message} from {sender}");
+            if(sender is GameObject){
+                model.current = sender as GameObject;
+            }
+        }
         if(isPlaying && instance){
             instance.DoUpdate(null);
         }
