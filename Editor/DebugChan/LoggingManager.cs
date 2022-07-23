@@ -13,7 +13,7 @@ public static class LoggingManager{
     static void OnPlayState(PlayModeStateChange state){
         switch(state){
             case PlayModeStateChange.EnteredPlayMode:
-                DebugChan.logger = new Logger<string, object>();
+                DebugChan.logger = new Logger<LogMessage, object>();
                 DebugChan.logToConsole = Config.logToConsole;
                 DebugChan.maxMessages = Config.maxMessages == 0
                     ? (int?)null

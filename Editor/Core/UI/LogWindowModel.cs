@@ -14,8 +14,8 @@ public class LogWindowModel{
     public int? currentFrame;
     public PrologHistory filtered{ get; private set; }
     PrologFilter filter;
-    public PrologFrame   pgRange;  // selected prolog range
-    public Range<string> dcRange;  // selected debug-chan range
+    public PrologFrame       pgRange;  // selected prolog range
+    public Range<LogMessage> dcRange;  // selected debug-chan range
 
     public LogWindowModel(){
         PrologLogger.onFrame += OnPrologFrame;
