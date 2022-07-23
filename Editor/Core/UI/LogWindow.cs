@@ -125,7 +125,7 @@ public partial class LogWindow : EditorWindow{
     void ConfigTextAreaStyle(){
         var f = monofont;
         if(f == null) Debug.LogError("font not available");
-        var style = GUI.skin.button;
+        var style = GUI.skin.textArea;
         style.font = f;
         style.fontSize = FontSize;
         style.normal.textColor  = Color.white * 0.9f;

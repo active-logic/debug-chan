@@ -42,7 +42,7 @@ public partial class LogWindow{  // Debug-Chan
     }
 
     string EvalTextContent(float time){
-        var logger = (Activ.Loggr.Logger<string, object>) DebugChan.logger;
+        var logger = (Activ.Loggr.Logger<LogMessage, object>) DebugChan.logger;
         if(logger == null){
             return "";  // "Debug-Chan: not running";
         }

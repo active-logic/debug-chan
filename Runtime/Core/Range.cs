@@ -38,9 +38,18 @@ public class Range<T> : Formatting{
     => FormatSpan(time) + "\n" + messages.Format();
 
     string FormatSpan()
-    => $"[ {start.frame} → {end.frame} ]";
+    => spanFormat + ' ' + durationFormat;
 
     string FormatSpan(float time)
-    => $"[ {start.frame} → {end.frame} ] {(time - start.time):0.00}s ago ";
+    => spanFormat + $" {(time - start.time):0.00}s ago "
+       + durationFormat;
+
+    string spanFormat => duration == 0 ? $"[{start.frame}]"
+                       : $"[{start.frame} → {end.frame}]";
+
+    string durationFormat
+    => duration == 0 ? null : $"({duration:0.000}s)";
+
+    float duration => end.time - start.time;
 
 }}
