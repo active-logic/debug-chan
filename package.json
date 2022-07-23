@@ -1,6 +1,6 @@
 {
   "name": "com.activ.debug-chan",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "displayName": "Debug-Chan",
   "description": "Loggers, instrumentation, interactive console",
   "unity": "2018.4",
