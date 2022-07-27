@@ -20,11 +20,17 @@ public class Stamp{
 
     public override int GetHashCode() => frame;
 
-    public static implicit operator Stamp(int arg)
-    => new Stamp(arg, -1f);
-
     public static implicit operator int(Stamp arg)
     => arg.frame;
+
+    public static implicit operator float(Stamp arg)
+    => arg.time;
+
+    public static implicit operator Stamp(float arg)
+    => new Stamp(-1, arg);
+
+    public static implicit operator Stamp(int arg)
+    => new Stamp(arg, -1f);
 
     public static Stamp operator + (Stamp x, int y)
     => new Stamp(x.frame + y, x.time);
@@ -36,16 +42,16 @@ public class Stamp{
     => x.frame > y.frame;
 
     public static bool operator > (Stamp x, float y)
-    => x.frame > y;
+    => x.time > y;
 
     public static bool operator < (Stamp x, float y)
-    => x.frame < y;
+    => x.time < y;
 
     public static bool operator > (float x, Stamp y)
-    => x > y.frame;
+    => x > y.time;
 
     public static bool operator < (float x, Stamp y)
-    => x < y.frame;
+    => x < y.time;
 
     public static bool operator < (Stamp x, Stamp y)
     => x.frame < y.frame;

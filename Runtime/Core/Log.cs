@@ -59,7 +59,7 @@ public class Log<T>{
     }
 
     public string Format(float since, float time){
-        int start = RangeId(since) - 1;
+        int start = RangeId(since);
         if(start < 0) start = 0;
         var @out = new StringBuilder();
         var t = time;
