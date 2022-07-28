@@ -28,7 +28,7 @@ public partial class LogWindow : EditorWindow{
     LogWindow(){
         Ed.pauseStateChanged +=
             (PauseState s) => { if(s == PauseState.Paused) Repaint(); };
-        Activ.Loggr.Logger<string, object>.onMessage += OnGenericMessage;
+        Activ.Loggr.Logger<LogMessage, object>.onMessage += OnGenericMessage;
     }
 
     void OnFocus(){

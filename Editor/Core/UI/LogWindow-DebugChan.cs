@@ -7,21 +7,22 @@ public partial class LogWindow{  // Debug-Chan
     Vector2 dc_scroll;
 
     // From DebugChan
-    public void OnGenericMessage(string message, object sender, int messageCount){
+
+    public void OnGenericMessage(LogMessage message,
+                                 object sender,
+                                 int messageCount){
         cumulatedMessageCount = messageCount;
         if(Config.useSelection && model.current == null){
             if(sender is GameObject){
                 model.current = sender as GameObject;
-                Debug.Log($"Make current {model.current}");
             }
             if(sender is Component){
                 model.current = (sender as Component).gameObject;
-                Debug.Log($"Make current {model.current}");
             }
         }
-        if(breakpoint != null && message.ToLower().Contains(breakpoint.ToLower())){
+        if(breakpoint != null && message.Contains(
+                                 breakpoint, caseSensitive: false)){
             Debug.Break();
-            Debug.Log($"Break on {message} from {sender}");
             if(sender is GameObject){
                 model.current = sender as GameObject;
             }
@@ -53,9 +54,6 @@ public partial class LogWindow{  // Debug-Chan
             var startTime = time - Config.historySpan;
             var text = logger[model.selection]?.Format(since: startTime, time)
                        ?? "Debug-Chan: no messages";
-            // NOTE: history does not include latest frame.
-            //var frame = logger.CurrentFrame(model.selection);
-            //if(frame != null) text += frame.Format();
             return model.selection.name + "\n\n" + text;
         }else{
             var frame = logger.CurrentFrame(model.selection);

@@ -1,10 +1,10 @@
 {
-    "name": "Prolog-Editor-Tests",
+    "name": "activ.debug-chan.tests",
     "references": [
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "Activ.Prolog",
-        "Activ.Prolog.Runtime"
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:0acc523941302664db1f4e527237feb3",
+        "GUID:238b81c5280af4ff585802b78f311398",
+        "GUID:915b17af40d5d214abbf6b22495814a5"
     ],
     "includePlatforms": [
         "Editor"
