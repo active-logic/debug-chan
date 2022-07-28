@@ -15,7 +15,7 @@ public class Range<T> : Formatting{
     }
 
     public bool Contains(float time){
-        if(time <= start) return false;
+        if(time < start) return false;
         if(end == null) return true;
         return time < end;
     }
@@ -23,8 +23,8 @@ public class Range<T> : Formatting{
     // NOTE: 'Add' or 'ExtendWith' may be better names
     public bool Include(Frame<T> arg){
         if(arg.time != end + 1) return false;
-        var count = messages.Length;
-        if(arg.messages.Count != count) return false;
+        var count = messages?.Length ?? 0;
+        if((arg.messages?.Count ?? 0) != count) return false;
         for(int i = 0; i < count; i++){
             if(!arg.messages[i].Equals(messages[i])) return false;
         }

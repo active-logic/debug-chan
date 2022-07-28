@@ -20,9 +20,6 @@ public static class LoggingManager{
                     : Config.maxMessages;
                 Activ.Loggr.UI.LogWindow.cumulatedMessageCount = 0;
                 break;
-            //case PlayModeStateChange.ExitingPlayMode:
-            //    DebugChan.logger = null;
-            //    break;
         }
     }
 
