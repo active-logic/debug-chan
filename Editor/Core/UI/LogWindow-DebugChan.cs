@@ -5,6 +5,7 @@ namespace Activ.Loggr.UI{
 public partial class LogWindow{  // Debug-Chan
 
     Vector2 dc_scroll;
+    int breakFrame;
 
     // From DebugChan
 
@@ -20,9 +21,18 @@ public partial class LogWindow{  // Debug-Chan
                 model.current = (sender as Component).gameObject;
             }
         }
+        if(Time.frameCount >= breakFrame && breakFrame != -1){
+            Debug.Log($"delayed break on frame {Time.frameCount}");
+            Debug.Break();
+            breakFrame = -1;
+        }
         if(breakpoint != null && message.Contains(
                                  breakpoint, caseSensitive: false)){
-            Debug.Break();
+            if(breakpointDelayFrames == 0){
+                Debug.Break();
+            }else{
+                breakFrame = Time.frameCount + breakpointDelayFrames;
+            }
             if(sender is GameObject){
                 model.current = sender as GameObject;
             }

@@ -15,6 +15,7 @@ public partial class LogWindow : EditorWindow{
     public static LogWindow instance;
     LogWindowModel model = new LogWindowModel();
     string breakpoint;
+    int breakpointDelayFrames = 0;
     //
     static Font normalButtonFont;
     static Font _font;
@@ -64,6 +65,7 @@ public partial class LogWindow : EditorWindow{
     void DrawFooter(){
         breakpoint = EGL.DelayedTextField("Breakpoint", breakpoint)?.Trim();
         if(breakpoint?.Length == 0) breakpoint = null;
+        breakpointDelayFrames = EGL.IntField("After frames", breakpointDelayFrames);
         BeginHorizontal();
         // ◎
         Config.useSelection = ToggleLeft("Use Selection", Config.useSelection,
