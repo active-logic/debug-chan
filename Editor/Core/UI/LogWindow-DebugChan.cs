@@ -5,7 +5,7 @@ namespace Activ.Loggr.UI{
 public partial class LogWindow{  // Debug-Chan
 
     Vector2 dc_scroll;
-    int breakFrame;
+    int breakFrame = -1;
 
     // From DebugChan
 
