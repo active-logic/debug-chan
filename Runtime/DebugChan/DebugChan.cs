@@ -4,6 +4,7 @@ using P  = System.Runtime.CompilerServices.CallerFilePathAttribute;
 using M  = System.Runtime.CompilerServices.CallerMemberNameAttribute;
 using L  = System.Runtime.CompilerServices.CallerLineNumberAttribute;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 using Activ.Loggr; using Activ.LogChan;
 
 public static class DebugChan{
@@ -25,10 +26,27 @@ public static class DebugChan{
             UnityEngine.Debug.Log(arg, source as UnityEngine.Object);
     }
 
+    [Conditional("UNITY_EDITOR"), Conditional("DEBUG")]
+    public static void Warn(
+        string arg, object source,
+        [P] S path="", [M] S member="", [L] int line=0)
+    {
+        Debug.LogWarning($"{Name(source)}: {arg}",
+                         source as UnityEngine.Object);
+    }
+
     static object RemapSource(object arg){
         switch(arg){
             case Component c: return c.gameObject;
             default:          return arg;
+        }
+    }
+
+    static string Name(object arg){
+        switch(arg){
+            case GameObject go: return go.name;
+            case Component c: return c.gameObject.name;
+            default: return arg?.ToString() ?? "null";
         }
     }
 
